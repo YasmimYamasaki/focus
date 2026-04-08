@@ -42,10 +42,17 @@ INSTRUÇÕES DE USO
 - Utilizar o temporizador Pomodoro para iniciar ciclos de foco.
 - Acompanhar as sessões de produtividade conforme implementado no sistema.
 
-Integrantes do Grupo:
-André Bezerra
-Matheus Dias
-Matheus de Oliveira
-Daniel Rocha
-Bruno Vona
-Yasmin
+INTEGRANTES DO GRUPO:
+
+
+-André Bezerra
+
+-Matheus Dias
+
+-Matheus de Oliveira
+
+-Daniel Rocha
+
+-Bruno Vona
+
+-Yasmin
