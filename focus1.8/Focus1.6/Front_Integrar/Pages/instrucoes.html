@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instruções · Focus Study</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="css/instrucoes.css" />
+  <link rel="icon" type="image/png" href="Pages/images/poppy.png">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Focus Study</span>
+      </a>
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Início</a>
+        <a href="sobre.html" class="nav-link">Sobre</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+        <a href="planos.html" class="nav-link">Planos</a>
+        <a href="instrucoes.html" class="nav-link active">Instruções</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn-user" aria-label="Minha conta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+        <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="inst-hero">
+    <div class="hero-background">
+      <div class="gradient-blob blob-1"></div>
+      <div class="gradient-blob blob-2"></div>
+    </div>
+    <div class="container inst-hero-content">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        Central de Ajuda
+      </div>
+      <h1 class="gradient-text">Como Usar o Focus Study</h1>
+      <p>Guias completos para dominar cada funcionalidade da plataforma e maximizar seu foco.</p>
+    </div>
+  </section>
+
+  <!-- TAB NAV -->
+  <div class="tab-nav-wrap">
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('pomodoro', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+        Timer Pomodoro
+      </button>
+      <button class="tab-btn" onclick="switchTab('planilha', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <line x1="3" y1="9" x2="21" y2="9" />
+          <line x1="3" y1="15" x2="21" y2="15" />
+          <line x1="9" y1="3" x2="9" y2="21" />
+        </svg>
+        Planilha de Hábitos
+      </button>
+      <button class="tab-btn" onclick="switchTab('dashboard', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+        </svg>
+        Dashboard de Tarefas
+      </button>
+      <button class="tab-btn" onclick="switchTab('assistant', this)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+        </svg>
+        Focus Assistant
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="inst-body">
+    <div class="container">
+
+      <!-- POMODORO  -->
+      <div class="tab-panel active" id="panel-pomodoro">
+        <div class="inst-layout">
+          <aside class="inst-sidebar">
+            <p class="sidebar-label">Nesta seção</p>
+            <nav class="sidebar-nav">
+              <a href="#o-que-e">O que é Pomodoro</a>
+              <a href="#como-funciona">Como Funciona</a>
+              <a href="#configurar">Configurar o Timer</a>
+              <a href="#dicas-pomo">Dicas de Foco</a>
+            </nav>
+          </aside>
+          <main>
+
+            <section class="inst-section" id="o-que-e">
+              <h2>⏱ O que é a Técnica Pomodoro?</h2>
+              <p>A Técnica Pomodoro é um método de gestão do tempo criado por Francesco Cirillo no final dos anos 1980.
+                O nome vem de um timer de cozinha em formato de tomate (<em>pomodoro</em> em italiano) que ele usava na
+                universidade.</p>
+              <p>A premissa é simples: trabalhar em blocos de foco intenso intercalados com pausas curtas. Isso reduz a
+                fadiga mental, aumenta a concentração e cria uma sensação constante de progresso.</p>
+
+              <div class="pomodoro-demo">
+                <div class="demo-timer-ring">
+                  <span class="demo-timer-text">18:32</span>
+                </div>
+                <p class="demo-timer-label">Sessão de Foco em andamento</p>
+                <div class="demo-phases">
+                  <span class="demo-phase"><span class="phase-dot" style="background:var(--cyan)"></span> Foco (25
+                    min)</span>
+                  <span class="demo-phase"><span class="phase-dot" style="background:#22c55e"></span> Pausa curta (5
+                    min)</span>
+                  <span class="demo-phase"><span class="phase-dot" style="background:var(--pink)"></span> Pausa longa
+                    (15 min)</span>
+                </div>
+              </div>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="como-funciona">
+              <h2>Como Funciona no Focus Study</h2>
+              <p>No Focus Study, implementamos a técnica completa com controle automático dos ciclos:</p>
+              <ol>
+                <li>Escolha uma tarefa para trabalhar do seu Dashboard.</li>
+                <li>Inicie o timer — começa automaticamente com 25 minutos de foco.</li>
+                <li>Trabalhe com total dedicação até o alarme soar.</li>
+                <li>Aproveite 5 minutos de pausa curta (levante, respire, hidrate-se).</li>
+                <li>Repita o ciclo. Após 4 pomodoros, uma pausa longa de 15–30 minutos.</li>
+              </ol>
+
+              <div class="tip-box">
+                <span class="tip-icon">💡</span>
+                <p><strong>Dica:</strong> Durante a sessão de foco, feche abas desnecessárias, silencie notificações e
+                  avise as pessoas ao redor que você está em modo de foco. Cada interrupção faz o cérebro levar até 23
+                  minutos para reconcentrar totalmente.</p>
+              </div>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="configurar">
+              <h2>Configurar o Timer</h2>
+              <p>O Focus Study permite personalizar as durações para seu ritmo ideal:</p>
+              <ul>
+                <li><strong>Duração do foco:</strong> padrão 25 min (recomendamos entre 20–50 min).</li>
+                <li><strong>Pausa curta:</strong> padrão 5 min (ideal para levantamentos rápidos).</li>
+                <li><strong>Pausa longa:</strong> padrão 15 min (após cada ciclo de 4 pomodoros).</li>
+                <li><strong>Sons de alerta:</strong> escolha entre sons suaves ou silencioso.</li>
+                <li><strong>Auto-início:</strong> próxima fase começa automaticamente.</li>
+              </ul>
+              <p>Acesse as configurações pelo ícone de engrenagem na tela do Timer ou pelo seu perfil.</p>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="dicas-pomo">
+              <h2>Dicas para Maximizar o Foco</h2>
+
+              <div class="steps-card">
+                <h3 style="margin-top:0">🧠 Regras de Ouro do Pomodoro</h3>
+                <ul>
+                  <li>Se a tarefa for muito pequena, agrupe várias no mesmo pomodoro.</li>
+                  <li>Se surgir uma ideia, anote-a rapidamente e continue — não quebre a sessão.</li>
+                  <li>Se alguém interromper, use o "informar, negociar e retornar" — avise que está em sessão.</li>
+                  <li>As pausas são obrigatórias — resistir a elas reduz a eficácia do método.</li>
+                  <li>Registre quantos pomodoros cada tarefa consome para melhorar suas estimativas.</li>
+                </ul>
+              </div>
+            </section>
+
+          </main>
+        </div>
+      </div>
+
+      <!-- PLANILHA -->
+      <div class="tab-panel" id="panel-planilha">
+        <div class="inst-layout">
+          <aside class="inst-sidebar">
+            <p class="sidebar-label">Nesta seção</p>
+            <nav class="sidebar-nav">
+              <a href="#conceito">O Conceito</a>
+              <a href="#estrutura">Estrutura da Planilha</a>
+              <a href="#metricas">Métricas e Análises</a>
+              <a href="#grafico">Gráfico de Progresso</a>
+              <a href="#dicas-hab">Dicas de Hábitos</a>
+            </nav>
+          </aside>
+          <main>
+
+            <section class="inst-section" id="conceito">
+              <h2>📊 A Planilha de Acompanhamento de Hábitos</h2>
+              <p>Inspirada em métodos comprovados de formação de hábitos (como o <em>Habit Tracking</em> de James Clear
+                em <em>Atomic Habits</em>), a planilha do Focus Study permite registrar e visualizar seus hábitos
+                diários ao longo do mês.</p>
+              <p>A ideia é criar uma "corrente" visual de consistência — cada dia marcado fortalece o hábito e motiva a
+                não "quebrar a sequência".</p>
+
+              <div class="tip-box">
+                <span class="tip-icon">📅</span>
+                <p>A planilha é organizada por <strong>mês</strong> e dividida em <strong>semanas</strong>, mostrando os
+                  dias úteis (Seg–Sex) de cada semana do mês.</p>
+              </div>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="estrutura">
+              <h2>Estrutura da Planilha</h2>
+
+              <div class="sheet-preview">
+                <div class="sheet-header">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <line x1="3" y1="9" x2="21" y2="9" />
+                    <line x1="9" y1="3" x2="9" y2="21" />
+                  </svg>
+                  Março — Semana 1 (Seg 2 → Sex 6)
+                </div>
+                <div class="sheet-body">
+                  <div class="habit-row-demo">
+                    <span class="habit-name">Acordar 6h da manhã</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check"></span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check"></span>
+                    <div class="habit-bar">
+                      <div class="habit-bar-fill" style="width:60%"></div>
+                    </div>
+                  </div>
+                  <div class="habit-row-demo">
+                    <span class="habit-name">Beber 2 litros de água</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check done">✓</span>
+                    <div class="habit-bar">
+                      <div class="habit-bar-fill" style="width:100%"></div>
+                    </div>
+                  </div>
+                  <div class="habit-row-demo">
+                    <span class="habit-name">Estudar / Curso</span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check"></span>
+                    <span class="habit-check done">✓</span>
+                    <span class="habit-check"></span>
+                    <span class="habit-check"></span>
+                    <div class="habit-bar">
+                      <div class="habit-bar-fill" style="width:40%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p>Cada linha representa um hábito. As colunas são os dias úteis do mês. Você marca (✓) ou deixa em branco
+                cada dia:</p>
+              <ul>
+                <li><strong>Cabeçalho superior:</strong> resumo do mês — total de hábitos, completados e barra de
+                  progresso geral.</li>
+                <li><strong>Coluna de hábitos:</strong> lista de até 14 hábitos personalizáveis (ilimitado no plano
+                  Pro).</li>
+                <li><strong>Grade de dias:</strong> checkboxes para marcação diária, agrupados por semana.</li>
+                <li><strong>Painel de Análises (lateral):</strong> Meta vs. Atual para cada hábito com barra de
+                  progresso.</li>
+                <li><strong>Linha de progresso diário:</strong> percentual de hábitos completados por dia.</li>
+              </ul>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="metricas">
+              <h2>Métricas e Análises</h2>
+              <p>A planilha calcula automaticamente diversas métricas para cada hábito e para o mês inteiro:</p>
+
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <div class="metric-icon">🎯</div>
+                  <div class="metric-name">Meta</div>
+                  <div class="metric-desc">Dias-alvo para o hábito no mês (padrão: dias úteis).</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">✅</div>
+                  <div class="metric-name">Atual</div>
+                  <div class="metric-desc">Quantos dias o hábito foi completado até hoje.</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">📈</div>
+                  <div class="metric-name">% Progresso</div>
+                  <div class="metric-desc">Percentual de dias cumpridos em relação à meta.</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">📅</div>
+                  <div class="metric-name">% Diário</div>
+                  <div class="metric-desc">Percentual de hábitos feitos em cada dia específico.</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">🔢</div>
+                  <div class="metric-name">Feito</div>
+                  <div class="metric-desc">Contagem absoluta de dias marcados por coluna.</div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-icon">📉</div>
+                  <div class="metric-name">Não Feito</div>
+                  <div class="metric-desc">Dias em que o hábito não foi executado.</div>
+                </div>
+              </div>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="grafico">
+              <h2>Gráfico de Progresso Mensal</h2>
+              <p>Na parte inferior da planilha há um gráfico de linha que exibe a evolução do progresso diário ao longo
+                do mês. Ele é gerado automaticamente com base nos dados preenchidos.</p>
+              <ul>
+                <li>O <strong>eixo X</strong> representa os dias do mês.</li>
+                <li>O <strong>eixo Y</strong> mostra o percentual de hábitos completados (0% a 100%).</li>
+                <li>A <strong>área sombreada</strong> abaixo da linha facilita a leitura da tendência geral.</li>
+                <li>Dias sem dados (futuros) aparecem em branco automaticamente.</li>
+              </ul>
+              <p>Use o gráfico para identificar padrões: dias da semana mais consistentes, semanas de queda e
+                oportunidades de melhoria.</p>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="dicas-hab">
+              <h2>Dicas para Criar Hábitos Duradouros</h2>
+
+              <div class="steps-card">
+                <h3 style="margin-top:0">🌱 Como começar certo</h3>
+                <ol>
+                  <li>Comece com poucos hábitos (3 a 5 no máximo) — acumular muitos de vez garante falha.</li>
+                  <li>Defina hábitos pequenos e específicos: "Ler 10 páginas" é melhor que "Ler mais".</li>
+                  <li>Vincule novos hábitos a rotinas já existentes (ex.: ler após o café da manhã).</li>
+                  <li>Marque imediatamente após completar — o ato de marcar reforça o comportamento.</li>
+                  <li>Não quebre a corrente dois dias seguidos — um dia perdido acontece, dois é um novo hábito ruim.
+                  </li>
+                </ol>
+              </div>
+
+              <div class="tip-box">
+                <span class="tip-icon">🔑</span>
+                <p>A planilha foi projetada para ser preenchida <strong>todo dia</strong>, idealmente à noite como parte
+                  de uma revisão diária de 2 minutos. A consistência de preenchimento é o primeiro hábito a cultivar.
+                </p>
+              </div>
+            </section>
+
+          </main>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <div class="tab-panel" id="panel-dashboard">
+        <div class="inst-layout">
+          <aside class="inst-sidebar">
+            <p class="sidebar-label">Nesta seção</p>
+            <nav class="sidebar-nav">
+              <a href="#dash-intro">Visão Geral</a>
+              <a href="#projetos">Projetos</a>
+              <a href="#tarefas">Tarefas</a>
+              <a href="#cronometro">Cronômetro</a>
+            </nav>
+          </aside>
+          <main>
+
+            <section class="inst-section" id="dash-intro">
+              <h2>🗂 O Dashboard de Tarefas</h2>
+              <p>O Dashboard é o centro de controle do seu trabalho no Focus Study. Aqui você cria projetos, adiciona
+                tarefas e acompanha o tempo dedicado a cada uma delas com cronômetros integrados.</p>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="projetos">
+              <h2>Criando Projetos</h2>
+              <p>Projetos são agrupamentos de tarefas relacionadas. Exemplos: "TCC", "Trabalho de Cálculo", "Estudo para
+                Concurso".</p>
+              <ul>
+                <li>Clique em <strong>+ Adicionar Novo Projeto</strong> no Dashboard.</li>
+                <li>Dê um nome claro e objetivo ao projeto.</li>
+                <li>Use projetos para separar contextos diferentes da sua vida.</li>
+              </ul>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="tarefas">
+              <h2>Gerenciando Tarefas</h2>
+              <p>Cada tarefa tem um ciclo de vida com 4 status:</p>
+              <ul>
+                <li><strong>Pendente:</strong> tarefa criada, ainda não iniciada.</li>
+                <li><strong>Em Andamento:</strong> cronômetro ativo, tempo sendo contabilizado.</li>
+                <li><strong>Pausada:</strong> cronômetro parado temporariamente, tempo acumulado salvo.</li>
+                <li><strong>Concluída:</strong> tarefa finalizada, duração total registrada.</li>
+              </ul>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="cronometro">
+              <h2>O Cronômetro Integrado</h2>
+              <p>Diferente do Pomodoro (que usa blocos fixos), o cronômetro do Dashboard mede o tempo real dedicado a
+                cada tarefa de forma contínua:</p>
+              <ol>
+                <li>Clique em <strong>Iniciar</strong> para começar a contar o tempo.</li>
+                <li>Use <strong>Pausar</strong> se precisar interromper — o tempo acumulado é salvo.</li>
+                <li>Clique em <strong>Retomar</strong> para continuar de onde parou.</li>
+                <li>Ao terminar, clique em <strong>Finalizar</strong> — a duração total é registrada.</li>
+              </ol>
+              <div class="tip-box">
+                <span class="tip-icon">⚡</span>
+                <p>Combine o Dashboard com o Pomodoro: use o timer Pomodoro para as sessões de foco e o cronômetro do
+                  Dashboard para medir o total investido em cada projeto.</p>
+              </div>
+            </section>
+
+          </main>
+        </div>
+      </div>
+
+      <!-- ASSISTANT -->
+      <div class="tab-panel" id="panel-assistant">
+        <div class="inst-layout">
+          <aside class="inst-sidebar">
+            <p class="sidebar-label">Nesta seção</p>
+            <nav class="sidebar-nav">
+              <a href="#poppy-intro">Quem é a Poppy</a>
+              <a href="#o-que-faz">O que ela faz</a>
+              <a href="#como-usar-poppy">Como Usar</a>
+              <a href="#exemplos">Exemplos de Perguntas</a>
+            </nav>
+          </aside>
+          <main>
+
+            <section class="inst-section" id="poppy-intro">
+              <h2>🐰 Poppy — Focus Assistant</h2>
+              <p>A Poppy é a assistente virtual do Focus Study, acessível pelo widget no canto inferior direito da tela.
+                Ela foi treinada para ajudar estudantes e profissionais a otimizar seus estudos, técnicas de foco e
+                rotinas produtivas.</p>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="o-que-faz">
+              <h2>O que a Poppy faz?</h2>
+              <ul>
+                <li>Responde dúvidas sobre técnicas de estudo e produtividade.</li>
+                <li>Sugere estratégias personalizadas de foco baseadas no seu contexto.</li>
+                <li>Explica conceitos difíceis de forma simples.</li>
+                <li>Ajuda a planejar sessões de estudo e definir prioridades.</li>
+                <li>Motiva e oferece suporte emocional nos momentos de procrastinação.</li>
+              </ul>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="como-usar-poppy">
+              <h2>Como Usar</h2>
+              <ol>
+                <li>Clique no ícone da Poppy no canto inferior direito da tela.</li>
+                <li>Digite sua pergunta ou desafio no campo de texto.</li>
+                <li>Pressione Enter ou clique no botão enviar.</li>
+                <li>A Poppy responderá em poucos segundos com orientações personalizadas.</li>
+              </ol>
+              <p>No plano Grátis, você tem 10 mensagens por dia. Planos pagos têm acesso ilimitado.</p>
+            </section>
+
+            <hr class="divider-line">
+
+            <section class="inst-section" id="exemplos">
+              <h2>Exemplos de Perguntas</h2>
+
+              <div class="steps-card">
+                <ul>
+                  <li>"Como posso parar de procrastinar quando não tenho vontade de estudar?"</li>
+                  <li>"Me explica como funciona o método Feynman para aprender melhor."</li>
+                  <li>"Qual a melhor forma de estudar para provas com pouco tempo?"</li>
+                  <li>"Crie um plano de estudos de 2 semanas para [matéria]."</li>
+                  <li>"Como manter o foco por mais de 1 hora sem me distrair?"</li>
+                  <li>"Me dê 3 técnicas de memorização para vocabulário."</li>
+                </ul>
+              </div>
+
+              <div class="tip-box">
+                <span class="tip-icon">🐰</span>
+                <p>Quanto mais contexto você der à Poppy (seu objetivo, nível de conhecimento, tempo disponível), mais
+                  precisa e útil será a resposta dela.</p>
+              </div>
+            </section>
+
+          </main>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-glow"></div>
+
+    <div class="container">
+
+      <!-- TOPO DO FOOTER -->
+      <div class="footer-top">
+
+        <!-- MARCA -->
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo">
+            <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Focus Study</span>
+          </a>
+          <p class="footer-tagline">
+            Domine sua concentração.<br>Alcance o próximo nível.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-link" title="Twitter/X" aria-label="Twitter">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.266 5.64 5.898-5.64Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            <a href="#" class="social-link" title="GitHub" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+              </svg>
+            </a>
+            <a href="#" class="social-link" title="LinkedIn" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.39v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M7 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+              </svg>
+            </a>
+            <a href="#" class="social-link" title="Instagram" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- NAVEGAÇÃO -->
+        <div class="footer-nav-group">
+          <h4 class="footer-heading">Produto</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Início</a></li>
+            <li><a href="../index.html#funcionalidades">Funcionalidades</a></li>
+            <li><a href="../index.html#como-funciona">Como Funciona</a></li>
+            <li><a href="../index.html#numeros">Nossos Números</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-group">
+          <h4 class="footer-heading">Empresa</h4>
+          <ul class="footer-links">
+            <li><a href="sobre.html">Sobre Nós</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="planos.html">Planos</a></li>
+            <li><a href="instrucoes.html">Instruções</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-group">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacidade.html">Privacidade</a></li>
+            <li><a href="termos.html">Termos de Uso</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+
+        <!-- NEWSLETTER -->
+        <div class="footer-newsletter">
+          <h4 class="footer-heading">Fique por dentro</h4>
+          <p>Dicas de foco e produtividade direto no seu e-mail.</p>
+          <form class="newsletter-form" onsubmit="return false;">
+            <input type="email" placeholder="seu@email.com" aria-label="E-mail para newsletter" />
+            <button type="submit" aria-label="Inscrever">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          </form>
+        </div>
+
+      </div><!-- /footer-top -->
+
+      <!-- DIVISOR -->
+      <div class="footer-divider"></div>
+
+      <!-- RODAPÉ INFERIOR -->
+      <div class="footer-bottom">
+        <p>&copy; 2026 Focus Study. Todos os direitos reservados.</p>
+        <div class="footer-bottom-links">
+          <a href="privacidade.html">Política de Privacidade</a>
+          <a href="termos.html">Termos</a>
+          <a href="cookies.html">Cookies</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Focus Assistant Widget -->
+  <!-- Botão flutuante com Poppy -->
+  <div class="chat-button" onclick="toggleChat()" title="Falar com a Focus Assistant">
+    <img src="images/poppy.png" alt="Poppy — Focus Assistant" />
+  </div>
+
+  <!-- Caixa de chat -->
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <img src="images/poppy.png" alt="Poppy" class="chat-header-avatar" />
+      <div class="chat-header-info">
+        <div class="chat-header-name">🐰 Focus Assistant</div>
+        <div class="chat-header-status">Online agora</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="messages">
+      <p class="msg-assistant">Olá! Como posso te ajudar a subir de nível nos estudos hoje? 🎮</p>
+    </div>
+
+    <div class="chat-input">
+      <input id="input" placeholder="Digite sua pergunta..." autocomplete="off" />
+      <button onclick="sendMessage()" aria-label="Enviar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <!-- Scripts -->
+  <script src="js/script_ia.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/instrucoes.js"></script>
+</body>
+
+</html>

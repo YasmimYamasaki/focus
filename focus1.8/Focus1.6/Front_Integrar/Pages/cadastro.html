@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro — Focus Study</title>
+  <link rel="icon" type="image/png" href="Pages/images/poppy.png">
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="css/cadastro.css" />
+</head>
+
+<body>
+
+  <!-- Header Focus Study -->
+  <header class="header">
+    <div class="container header-inner">
+
+      <a href="../index.html" class="logo">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Focus Study</span>
+      </a>
+
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Início</a>
+        <a href="sobre.html" class="nav-link">Sobre</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+        <a href="planos.html" class="nav-link">Planos</a>
+        <a href="instrucoes.html" class="nav-link">Instruções</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="login.html" class="btn-user" title="Minha conta" aria-label="Minha conta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="auth-page">
+    <div class="auth-bg">
+      <div class="auth-blob auth-blob-1"></div>
+      <div class="auth-blob auth-blob-2"></div>
+    </div>
+
+    <div class="auth-card">
+
+      <!-- Logo no topo do card -->
+      <a href="../index.html" class="auth-card-top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Focus Study</span>
+      </a>
+
+      <h1 class="auth-card-title">Criar conta</h1>
+      <p class="auth-card-subtitle">Já tem conta? <a href="login.html">Entrar</a></p>
+
+      <div id="alerta"></div>
+
+      <form id="formCadastro" enctype="multipart/form-data" novalidate>
+
+        <!-- Foto -->
+        <div class="foto-area">
+          <div class="foto-preview-wrapper" id="fotoWrapper" title="Clique para escolher uma foto">
+            <div class="foto-placeholder" id="fotoPlaceholder">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.776 48.776 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z" />
+              </svg>
+              Foto de perfil
+            </div>
+            <img id="fotoPreview" src="" alt="Prévia" style="display:none;" />
+          </div>
+          <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/gif,image/webp" />
+          <span class="foto-info">JPG, PNG, GIF ou WEBP · Máx. 5 MB · Opcional</span>
+        </div>
+
+        <!-- Dados pessoais -->
+        <div class="field-section">Dados pessoais</div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="nome">Nome</label>
+            <div class="field-wrap">
+              <input type="text" id="nome" name="nome" placeholder="Seu nome" required autocomplete="given-name" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="sobrenome">Sobrenome</label>
+            <div class="field-wrap">
+              <input type="text" id="sobrenome" name="sobrenome" placeholder="Seu sobrenome" required
+                autocomplete="family-name" />
+            </div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="data-nascimento">Data de Nascimento</label>
+            <div class="field-wrap">
+              <input type="date" id="data-nascimento" name="data_nascimento" required />
+            </div>
+            <div class="field-error" id="aviso"></div>
+          </div>
+
+          <div class="field">
+            <label for="genero">Gênero</label>
+            <div class="field-wrap select-wrap">
+              <select id="genero" name="genero" required>
+                <option value="feminino">Feminino</option>
+                <option value="masculino">Masculino</option>
+                <option value="outro">Prefiro não informar</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contato -->
+        <div class="field-section">Contato</div>
+
+        <div class="field">
+          <label for="telefone">Telefone</label>
+          <div class="field-wrap">
+            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15" required
+              autocomplete="tel" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">E-mail</label>
+          <div class="field-wrap">
+            <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <!-- Senha -->
+        <div class="field-section">Segurança</div>
+
+        <div class="field">
+          <label for="senha">Senha</label>
+          <div class="field-wrap">
+            <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" minlength="6" required
+              autocomplete="new-password" />
+            <button type="button" class="field-toggle" onclick="toggleSenha('senha', this)" aria-label="Mostrar senha">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="confirma-senha">Confirmar Senha</label>
+          <div class="field-wrap">
+            <input type="password" id="confirma-senha" placeholder="Repita sua senha" minlength="6" required
+              autocomplete="new-password" />
+            <button type="button" class="field-toggle" onclick="toggleSenha('confirma-senha', this)"
+              aria-label="Mostrar senha">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="field-error" id="aviso-senha"></div>
+        </div>
+
+        <button type="submit" class="btn-auth" id="btnEnviar">Criar conta</button>
+      </form>
+
+      <div class="auth-bottom">
+        Já tem conta? <a href="login.html">Entrar agora</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/script.js"></script>
+  <script src="js/cadastro.js"></script>
+</body>
+
+</html>

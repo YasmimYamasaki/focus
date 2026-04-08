@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Foco - Focus Study</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="icon" type="image/png" href="Pages/images/poppy.png">
+    <link rel="stylesheet" href="css/inicialusuario.css" />
+</head>
+
+<body class="dash-body">
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="../index.html" class="logo"><span>Focus Study</span></a>
+            <nav class="nav">
+                <a href="#" class="nav-link active">Painel</a>
+                <a href="estatisticas.html" class="nav-link">Estatísticas</a>
+            </nav>
+            <div class="user-avatar">
+                <img src="https://ui-avatars.com/api/?name=Focado&background=06b6d4&color=fff" alt="Perfil">
+            </div>
+        </div>
+    </header>
+
+    <main class="container dash-container">
+        <section class="dash-welcome">
+            <div>
+                <h1 class="dash-title">Bora focar, <span class="gradient-text">(nome do usuario)</span>?</h1>
+                <p id="current-date" class="dash-date">Carregando data...</p>
+            </div>
+        </section>
+
+        <div class="dash-grid">
+            <div class="dash-card timer-card">
+                <div class="badge">Pomodoro</div>
+                <div class="timer-display">
+                    <span id="minutes">25</span><span class="colon">:</span><span id="seconds">00</span>
+                </div>
+                <p class="timer-status js-timer-status">Pronto para começar</p>
+                <div class="timer-actions">
+                    <button class="btn btn-primary js-play">Iniciar</button>
+                    <button class="btn btn-secondary js-reset">Resetar</button>
+                </div>
+            </div>
+
+            <div class="dash-card tasks-card">
+                <div class="tasks-header">
+                    <h3>Minhas Missões</h3>
+                    <button class="btn-add-task js-add-task" title="Adicionar Tarefa">+</button>
+                </div>
+                <ul class="task-list js-task-list">
+                    <li class="task-item">
+                        <label class="custom-checkbox">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            <span class="task-text">Finalizar projeto de Front-end</span>
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <!-- Scripts -->
+    <script src="js/inicialusuario.js"></script>
+</body>
+
+</html>

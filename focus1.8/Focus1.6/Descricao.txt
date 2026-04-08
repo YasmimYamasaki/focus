@@ -1,0 +1,8 @@
+📄 Descrição do Projeto
+Sistema web de produtividade pessoal desenvolvido com o objetivo de auxiliar usuários a melhorar foco, organização e desempenho nas atividades diárias por meio da técnica Pomodoro.
+A aplicação permite que o usuário gerencie sessões de trabalho e pausas cronometradas, promovendo ciclos estruturados de concentração (tempo focado) intercalados com intervalos estratégicos para descanso. O sistema registra sessões realizadas, possibilita acompanhamento de desempenho e fornece controle individual de acesso por perfil.
+Controle de sessões de produtividade
+Autenticação segura com criptografia de senha
+Separação de responsabilidades (frontend, backend e banco de dados)
+Estrutura escalável para futuras melhorias
+O sistema foi desenvolvido como projeto acadêmico na área de Desenvolvimento de Sistemas, aplicando boas práticas de programação, organização de código e modelagem de banco de dados.

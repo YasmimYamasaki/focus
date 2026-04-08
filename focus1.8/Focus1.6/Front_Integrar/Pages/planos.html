@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planos · Focus Study</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="css/planos.css" />
+  <link rel="icon" type="image/png" href="Pages/images/poppy.png">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="../index.html" class="logo">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Focus Study</span>
+      </a>
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Início</a>
+        <a href="sobre.html" class="nav-link">Sobre</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+        <a href="planos.html" class="nav-link active">Planos</a>
+        <a href="instrucoes.html" class="nav-link">Instruções</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn-user" aria-label="Minha conta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+        <button class="nav-toggle" aria-label="Menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="plans-hero">
+    <div class="hero-background">
+      <div class="gradient-blob blob-1"></div>
+      <div class="gradient-blob blob-2"></div>
+    </div>
+    <div class="container plans-hero-content">
+      <div class="hero-badge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+        Planos & Preços
+      </div>
+      <h1 class="gradient-text">Escolha seu Plano</h1>
+      <p>Comece gratuitamente e evolua conforme sua jornada de foco avança.</p>
+
+      <div class="billing-toggle">
+        <button class="billing-btn active" id="btn-monthly" onclick="setBilling('monthly')">Mensal</button>
+        <button class="billing-btn" id="btn-annual" onclick="setBilling('annual')">
+          Anual <span class="save-badge">–20%</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANOS -->
+  <section class="plans-section">
+    <div class="container">
+      <div class="plans-grid">
+
+        <!-- PLANO GRATIS -->
+        <div class="plan-card">
+          <p class="plan-name">Grátis</p>
+          <div class="plan-price">
+            <span class="price-amount">R$0</span>
+            <span class="price-period">/mês</span>
+          </div>
+          <p class="price-annual">&nbsp;</p>
+          <p class="plan-desc">Perfeito para começar sua jornada de foco e criar bons hábitos.</p>
+          <ul class="plan-features">
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Timer Pomodoro completo</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Dashboard de tarefas (até 10)</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Planilha de hábitos (até 5 hábitos)</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Focus Assistant (Poppy) — 10 msgs/dia</li>
+            <li class="feature-dim"><span class="cross"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg></span> Análises avançadas</li>
+            <li class="feature-dim"><span class="cross"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg></span> Exportar dados</li>
+            <li class="feature-dim"><span class="cross"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg></span> Suporte prioritário</li>
+          </ul>
+          <a href="cadastro.html" class="plan-cta cta-outline">Começar Grátis</a>
+        </div>
+
+        <!-- PRO (implementado) -->
+        <div class="plan-card featured">
+          <div class="featured-label">✦ Mais Popular</div>
+          <p class="plan-name">Pro</p>
+          <div class="plan-price">
+            <span class="price-amount" id="pro-price">R$19</span>
+            <span class="price-period">/mês</span>
+          </div>
+          <p class="price-annual" id="pro-annual">&nbsp;</p>
+          <p class="plan-desc">Para estudantes e profissionais que querem desbloquear todo o potencial da plataforma.
+          </p>
+          <ul class="plan-features">
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Tudo do plano Grátis</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Tarefas e projetos ilimitados</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Hábitos ilimitados na planilha</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Focus Assistant ilimitado</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Análises detalhadas e gráficos</li>
+            <li><span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Exportar relatórios (PDF/CSV)</li>
+            <li class="feature-dim"><span class="cross"><svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg></span> Suporte 24h dedicado</li>
+          </ul>
+          <a href="cadastro.html" class="plan-cta cta-gradient">Assinar Pro</a>
+        </div>
+
+        <!-- PLANO PREMIUM -->
+        <div class="plan-card">
+          <p class="plan-name">Premium</p>
+          <div class="plan-price">
+            <span class="price-amount" id="prem-price">R$39</span>
+            <span class="price-period">/mês</span>
+          </div>
+          <p class="price-annual" id="prem-annual">&nbsp;</p>
+          <p class="plan-desc">Para equipes e power users que precisam do máximo em desempenho e suporte.</p>
+          <ul class="plan-features">
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Tudo do plano Pro</li>
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Suporte prioritário 24h</li>
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Acesso antecipado a novidades</li>
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Sessões de mentoria de foco</li>
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Integração com calendário</li>
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> Dashboard para equipes (até 5)</li>
+            <li><span class="check pink"><svg width="10" height="10" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="3">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg></span> API de integração</li>
+          </ul>
+          <a href="cadastro.html" class="plan-cta cta-outline"
+            style="border-color:rgba(236,72,153,0.3);color:var(--pink);">Assinar Premium</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Perguntas Frequentes</h2>
+        <p class="section-description">Tudo o que você precisa saber antes de assinar.</p>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Posso cancelar a qualquer momento?
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="faq-a">Sim! Você pode cancelar sua assinatura a qualquer momento sem taxa de cancelamento. O
+            acesso continuará até o fim do período já pago.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Existe período de teste gratuito?
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="faq-a">O plano Grátis é permanente e não tem prazo de expiração. Para os planos pagos, oferecemos
+            7 dias de teste sem necessidade de cartão de crédito.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Quais formas de pagamento são aceitas?
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="faq-a">Aceitamos cartão de crédito/débito (Visa, Mastercard, Amex), PIX e boleto bancário para
+            pagamentos anuais.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Meus dados ficam salvos se eu mudar de plano?
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="faq-a">Sim, todos os seus dados são preservados ao mudar de plano. Ao fazer downgrade, dados acima
+            do limite do novo plano ficam em modo somente leitura.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            O desconto anual é aplicado imediatamente?
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="faq-a">Sim! Ao escolher o plano anual, você paga 12 meses pelo preço de 9,6 — 20% de desconto
+            aplicado diretamente no checkout.</div>
+        </div>
+        <div class="faq-item">
+          <div class="faq-q" onclick="toggleFaq(this)">
+            Existe plano para estudantes?
+            <svg class="faq-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </div>
+          <div class="faq-a">Estamos trabalhando em um programa de desconto educacional. Entre em contato via página de
+            contato para verificar elegibilidade.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-glow"></div>
+
+    <div class="container">
+
+      <!-- TOPO DO FOOTER -->
+      <div class="footer-top">
+
+        <!-- MARCA -->
+        <div class="footer-brand">
+          <a href="index.html" class="footer-logo">
+            <svg class="icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Focus Study</span>
+          </a>
+          <p class="footer-tagline">
+            Domine sua concentração.<br>Alcance o próximo nível.
+          </p>
+          <div class="footer-socials">
+            <a href="#" class="social-link" title="Twitter/X" aria-label="Twitter">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.266 5.64 5.898-5.64Zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </a>
+            <a href="#" class="social-link" title="GitHub" aria-label="GitHub">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+              </svg>
+            </a>
+            <a href="#" class="social-link" title="LinkedIn" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.39v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M7 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
+              </svg>
+            </a>
+            <a href="#" class="social-link" title="Instagram" aria-label="Instagram">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- NAVEGAÇÃO -->
+        <div class="footer-nav-group">
+          <h4 class="footer-heading">Produto</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Início</a></li>
+            <li><a href="../index.html#funcionalidades">Funcionalidades</a></li>
+            <li><a href="../index.html#como-funciona">Como Funciona</a></li>
+            <li><a href="../index.html#numeros">Nossos Números</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-group">
+          <h4 class="footer-heading">Empresa</h4>
+          <ul class="footer-links">
+            <li><a href="sobre.html">Sobre Nós</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="planos.html">Planos</a></li>
+            <li><a href="instrucoes.html">Instruções</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-nav-group">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacidade.html">Privacidade</a></li>
+            <li><a href="termos.html">Termos de Uso</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </div>
+
+        <!-- NEWSLETTER -->
+        <div class="footer-newsletter">
+          <h4 class="footer-heading">Fique por dentro</h4>
+          <p>Dicas de foco e produtividade direto no seu e-mail.</p>
+          <form class="newsletter-form" onsubmit="return false;">
+            <input type="email" placeholder="seu@email.com" aria-label="E-mail para newsletter" />
+            <button type="submit" aria-label="Inscrever">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+          </form>
+        </div>
+
+      </div><!-- /footer-top -->
+
+      <!-- DIVISOR -->
+      <div class="footer-divider"></div>
+
+      <!-- RODAPÉ INFERIOR -->
+      <div class="footer-bottom">
+        <p>&copy; 2026 Focus Study. Todos os direitos reservados.</p>
+        <div class="footer-bottom-links">
+          <a href="privacidade.html">Política de Privacidade</a>
+          <a href="termos.html">Termos</a>
+          <a href="cookies.html">Cookies</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Focus Assistant Widget -->
+  <!-- Botão flutuante com Poppy -->
+  <div class="chat-button" onclick="toggleChat()" title="Falar com a Focus Assistant">
+    <img src="images/poppy.png" alt="Poppy — Focus Assistant" />
+  </div>
+
+  <!-- Caixa de chat -->
+  <div class="chat-box" id="chatBox">
+    <div class="chat-header">
+      <img src="images/poppy.png" alt="Poppy" class="chat-header-avatar" />
+      <div class="chat-header-info">
+        <div class="chat-header-name">🐰 Focus Assistant</div>
+        <div class="chat-header-status">Online agora</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="messages">
+      <p class="msg-assistant">Olá! Como posso te ajudar a subir de nível nos estudos hoje? 🎮</p>
+    </div>
+
+    <div class="chat-input">
+      <input id="input" placeholder="Digite sua pergunta..." autocomplete="off" />
+      <button onclick="sendMessage()" aria-label="Enviar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <!-- Script -->
+  <script src="js/script_ia.js"></script>
+  <script src="js/script.js"></script>
+  <script src="js/planos.js"></script>
+</body>
+
+</html>

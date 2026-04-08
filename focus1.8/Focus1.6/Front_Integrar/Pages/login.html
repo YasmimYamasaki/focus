@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Focus Study</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/png" href="Pages/images/poppy.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+
+<body>
+
+  <!-- Header Focus Study -->
+  <header class="header">
+    <div class="container header-inner">
+
+      <!-- Logo -->
+      <a href="../index.html" class="logo">
+        <svg class="icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Focus Study</span>
+      </a>
+
+      <nav class="nav">
+        <a href="../index.html" class="nav-link">Início</a>
+        <a href="sobre.html" class="nav-link">Sobre</a>
+        <a href="contato.html" class="nav-link">Contato</a>
+        <a href="planos.html" class="nav-link">Planos</a>
+        <a href="instrucoes.html" class="nav-link">Instruções</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="login.html" class="btn-user" title="Minha conta" aria-label="Minha conta">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </a>
+
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo -->
+  <main class="auth-page">
+    <div class="auth-bg">
+      <div class="auth-blob auth-blob-1"></div>
+      <div class="auth-blob auth-blob-2"></div>
+    </div>
+
+    <div class="auth-wrapper">
+
+      <!-- Painel esquerdo -->
+      <aside class="auth-panel">
+        <a href="index.html" class="auth-panel-logo">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Focus Study</span>
+        </a>
+
+        <div>
+          <p class="auth-panel-tagline">Domine sua<br><span>concentração.</span></p>
+          <p class="auth-panel-desc" style="margin-top:14px;">Acesse sua conta e continue sua jornada rumo ao foco
+            absoluto.</p>
+        </div>
+
+        <div class="auth-panel-stats">
+          <div class="auth-stat">
+            <div class="auth-stat-dot"></div>
+            <span>+10.000 usuários ativos</span>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-dot"></div>
+            <span>500K+ horas de foco registradas</span>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-dot"></div>
+            <span>98% de satisfação comprovada</span>
+          </div>
+          <div class="auth-stat">
+            <div class="auth-stat-dot"></div>
+            <span>Avaliação 4.9 / 5 estrelas</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Card de login -->
+      <section class="auth-card">
+        <h1 class="auth-card-title">Entrar</h1>
+        <p class="auth-card-subtitle">Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+
+        <div id="alerta"></div>
+
+        <form id="formLogin" novalidate>
+
+          <div class="field">
+            <label for="username">E-mail</label>
+            <div class="field-wrap">
+              <input type="email" id="username" name="username" placeholder="seu@email.com" required
+                autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Senha</label>
+            <div class="field-wrap">
+              <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" required
+                autocomplete="current-password" />
+              <button type="button" class="field-toggle" onclick="toggleSenha('password', this)"
+                aria-label="Mostrar senha">
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-forgot">
+            <a href="recuperar-senha.html">Esqueci minha senha</a>
+          </div>
+
+          <button type="submit" class="btn-auth" id="btnLogin">Entrar</button>
+        </form>
+
+        <div class="auth-bottom">
+          Não tem conta? <a href="cadastro.html">Criar conta grátis</a>
+        </div>
+      </section>
+    </div>
+  </main>
+  <!-- Scripts -->
+  <script src="js/script.js"></script>
+  <script src="js/login.js"></script>
+
+</body>
+
+</html>
