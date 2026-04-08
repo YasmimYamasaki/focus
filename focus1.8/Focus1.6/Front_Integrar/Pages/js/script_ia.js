@@ -47,7 +47,7 @@ function sendMessage() {
     input.value = "";
     const typingEl = addMessage("assistant", "Digitando...", { typing: true });
     // Envia a mensagem para o servidor via POST
-    fetch(window.location.origin + "/Focus1.2/Front_Integrar/Pages/php/chat.php", {
+    fetch(window.location.origin + "focus1.8/Focus1.6/Front_Integrar/Pages/php/chat.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "message=" + encodeURIComponent(msg)
