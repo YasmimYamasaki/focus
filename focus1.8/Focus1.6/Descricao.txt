@@ -6,9 +6,3 @@ Autenticação segura com criptografia de senha
 Separação de responsabilidades (frontend, backend e banco de dados)
 Estrutura escalável para futuras melhorias
 O sistema foi desenvolvido como projeto acadêmico na área de Desenvolvimento de Sistemas, aplicando boas práticas de programação, organização de código e modelagem de banco de dados.
-
-
-
-Alterei a estrutura do painel ADM para 3 arquivos separados na pasta Pages, PHP e JS
-corrigi a estrutura de postgreSQL para MySQL
-Alterei as tabelas de user, e criei a de tickets:
