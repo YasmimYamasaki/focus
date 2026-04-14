@@ -28,22 +28,22 @@ document.getElementById('formLogin').addEventListener('submit', async function (
 
     // Pegamos o texto primeiro para garantir que não há erros de PHP no meio
     const text = await response.text();
-    
+
     try {
-        const data = JSON.parse(text);
-        
-        if (data.sucesso) {
-          mostrarAlerta(`Bem-vindo(a), ${data.nome}. Redirecionando...`, 'sucesso');
-          setTimeout(() => { window.location.href = data.redirect; }, 1300);
-        } else {
-          // Aqui aparecerá "Usuário ou senha inválidos" em vez de "Erro de conexão"
-          mostrarAlerta(data.mensagem, 'erro');
-          resetarBotao();
-        }
-    } catch (e) {
-        console.error("Resposta inválida do servidor:", text);
-        mostrarAlerta('Erro técnico: O servidor retornou um formato inválido.', 'erro');
+      const data = JSON.parse(text);
+
+      if (data.sucesso) {
+        mostrarAlerta(`Bem-vindo(a), ${data.nome}. Redirecionando...`, 'sucesso');
+        setTimeout(() => { window.location.href = data.redirect; }, 1300);
+      } else {
+        // Aqui aparecerá "Usuário ou senha inválidos" em vez de "Erro de conexão"
+        mostrarAlerta(data.mensagem, 'erro');
         resetarBotao();
+      }
+    } catch (e) {
+      console.error("Resposta inválida do servidor:", text);
+      mostrarAlerta('Erro técnico: O servidor retornou um formato inválido.', 'erro');
+      resetarBotao();
     }
 
   } catch (error) {

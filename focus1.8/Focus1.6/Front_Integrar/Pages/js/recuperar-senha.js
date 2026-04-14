@@ -7,7 +7,7 @@ document.getElementById('formRecuperar').addEventListener('submit', async functi
   btn.textContent = 'Enviando...';
   try {
     // Faz a requisição POST para o backend PHP
-    const res = await fetch('recuperar-senha.php', { method: 'POST', body: new FormData(this) });
+    const res = await fetch('php/recuperar-senha.php', { method: 'POST', body: new FormData(this) });
     // Converte a resposta do servidor para um objeto JSON
     const data = await res.json();
     mostrarAlerta(data.mensagem, data.sucesso ? 'sucesso' : 'erro');
