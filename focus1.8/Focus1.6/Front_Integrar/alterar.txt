@@ -1,5 +1,5 @@
 atualizar o css do instrução e planos
 atualizar o banco
-cirar tela de perfil do user
+criar tela de perfil do user
 criar tela de gerenciar do ADM
 Classe lê objeto, usar seta -> e nao []
