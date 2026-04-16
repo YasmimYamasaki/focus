@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Suporte — Focus Study</title>
   <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/contato_css.css" />
   <link rel="icon" type="image/png" href="images/poppy.png">
 
@@ -301,7 +301,8 @@
       <div class="tickets-table-wrap">
         <div class="tickets-table-header">
           <h3>Últimos chamados abertos</h3>
-          <button onclick="abrirModalLogin()" class="btn-ver-todos" style="cursor:pointer; border:none; background:none;">Painel Admin →</button>
+          <button onclick="abrirModalLogin()" class="btn-ver-todos"
+            style="cursor:pointer; border:none; background:none;">Painel Admin →</button>
         </div>
 
         <div id="tabelaTickets">
@@ -464,29 +465,31 @@
       </button>
     </div>
   </div>
-    <!-- Tela Login -->
-  <div id="modalSuporte" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
+  <!-- Tela Login -->
+  <div id="modalSuporte" class="modal-overlay"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:10000; align-items:center; justify-content:center; backdrop-filter:blur(10px);">
     <div class="support-form-wrap" style="max-width:400px; width:100%;">
-        <div class="modal-header">
-            <h2 class="form-title">Acesso Restrito</h2>
-            <button onclick="fecharModal()" class="btn-close">&times;</button>
+      <div class="modal-header">
+        <h2 class="form-title">Acesso Restrito</h2>
+        <button onclick="fecharModal()" class="btn-close">&times;</button>
+      </div>
+
+      <form id="formLoginAdmin">
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" name="email" required placeholder="admin@focusstudy.com">
         </div>
-        
-        <form id="formLoginAdmin">
-            <div class="field">
-                <label>E-mail</label>
-                <input type="email" name="email" required placeholder="admin@focusstudy.com">
-            </div>
-            <div class="field">
-                <label>Senha</label>
-                <input type="password" name="senha" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="btn-submit" id="btnLogar">Entrar no Painel</button>
-        </form>
-        
-        <div id="erroLogin" style="color:#ff4a9e; font-size:12px; margin-top:10px; display:none; text-align:center;"></div>
+        <div class="field">
+          <label>Senha</label>
+          <input type="password" name="senha" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-submit" id="btnLogar">Entrar no Painel</button>
+      </form>
+
+      <div id="erroLogin" style="color:#ff4a9e; font-size:12px; margin-top:10px; display:none; text-align:center;">
+      </div>
     </div>
-</div>
+  </div>
 
   <!-- Scripts -->
   <script src="js/script.js"></script>

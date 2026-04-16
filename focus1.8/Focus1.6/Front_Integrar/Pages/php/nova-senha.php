@@ -1,8 +1,9 @@
 <?php
+//corrigido
 header('Content-Type: application/json; charset=utf-8');
-//Corrigido
+ini_set('display_errors', 0);
 
-require_once __DIR__ . "/MySQLClass.php"; 
+require_once __DIR__ . "/MySQLClass.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -13,54 +14,52 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $token = trim($_POST['token'] ?? '');
 $senha = trim($_POST['senha'] ?? '');
 
-// Validação básica
 if (empty($token)) {
-    http_response_code(400);
     echo json_encode(['sucesso' => false, 'mensagem' => 'Token ausente.']);
     exit;
 }
 
 if (strlen($senha) < 6) {
-    http_response_code(422);
     echo json_encode(['sucesso' => false, 'mensagem' => 'A senha deve ter no mínimo 6 caracteres.']);
     exit;
 }
 
 try {
     $db = new MySQLClass();
-
-    // Verificar se o token existe e não expirou
-    $usuario = $db->search(
-        "SELECT id FROM users WHERE reset_token = ? AND reset_token_exp > NOW() LIMIT 1",
+    $tokenData = $db->search(
+        "SELECT user_id FROM tb_tokens 
+         WHERE token_content = ? 
+         AND sent_at > DATE_SUB(NOW(), INTERVAL 1 HOUR) 
+         LIMIT 1",
         [$token],
         true
     );
 
-    if (!$usuario) {
-        http_response_code(400);
+    if (!$tokenData) {
         echo json_encode([
-            'sucesso'  => false,
-            'mensagem' => 'Este link de recuperação é inválido ou já expirou.'
+            'sucesso' => false,
+            'mensagem' => 'Link inválido ou expirado. Solicite uma nova recuperação.'
         ]);
         exit;
     }
 
-    // Gerar o hash seguro
+    //  Gera o hash seguro
     $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
-    // Atualizar a senha e LIMPAR o token
+    // Atualiza a senha 
     $db->exec(
-        "UPDATE users SET password = ?, reset_token = NULL, reset_token_exp = NULL WHERE id = ?",
-        [$senhaHash, $usuario->id]
+        "UPDATE tb_users SET user_password = ? WHERE user_id = ?",
+        [$senhaHash, $tokenData->user_id]
     );
 
+    $db->exec("DELETE FROM tb_tokens WHERE token_content = ?", [$token]);
+
     echo json_encode([
-        'sucesso'  => true,
+        'sucesso' => true,
         'mensagem' => 'Senha alterada com sucesso! Redirecionando...'
     ]);
 
 } catch (Exception $e) {
-    error_log($e->getMessage());
-    http_response_code(500);
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro interno ao processar sua solicitação.']);
+    error_log("Erro ao resetar senha: " . $e->getMessage());
+    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro interno no servidor.']);
 }

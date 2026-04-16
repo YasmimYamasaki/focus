@@ -1,81 +1,61 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-//Corrigido
-
-// caminho da classe MySQL
 require_once __DIR__ . "/MySQLClass.php";
-
-if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    http_response_code(405);
-    echo json_encode(["sucesso" => false, "mensagem" => "Método não permitido."]);
-    exit();
-}
-
-/* DADOS */
-$nome = trim($_POST["nome"] ?? "");
-$sobrenome = trim($_POST["sobrenome"] ?? "");
-$dataNasc = trim($_POST["data_nascimento"] ?? "");
-$genero = trim($_POST["genero"] ?? "");
-$telefone = preg_replace('/\D/', '', $_POST["telefone"] ?? "");
-$email = trim($_POST["email"] ?? "");
-$senha = $_POST["senha"] ?? "";
-$confirmar = $_POST["confirmar"] ?? "";
-
-/* VALIDAÇÕES BÁSICAS */
-$erros = [];
-if ($nome === "" || $sobrenome === "")
-    $erros[] = "Nome e sobrenome são obrigatórios.";
-if (!filter_var($email, FILTER_VALIDATE_EMAIL))
-    $erros[] = "E-mail inválido.";
-if (strlen($senha) < 6)
-    $erros[] = "A senha deve ter ao menos 6 caracteres.";
-if ($senha !== $confirmar)
-    $erros[] = "As senhas não coincidem.";
-
-if (!empty($erros)) {
-    http_response_code(422);
-    echo json_encode(["sucesso" => false, "mensagem" => implode(" ", $erros)]);
-    exit();
-}
-
-/* LÓGICA DE UPLOAD */
-$avatar = null;
-if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] === UPLOAD_ERR_OK) {
-    $ext = strtolower(pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION));
-    $pasta = __DIR__ . "/uploads/fotos/";
-    if (!is_dir($pasta))
-        mkdir($pasta, 0755, true);
-
-    $avatar = "user_" . uniqid() . "." . $ext;
-    move_uploaded_file($_FILES["foto"]["tmp_name"], $pasta . $avatar);
-}
-
+//corrigido
 try {
-    $db = new MySQLClass();
+    if ($_SERVER["REQUEST_METHOD"] !== "POST")
+        throw new Exception("Método inválido.");
 
-    $sql = "INSERT INTO users 
-            (name, email, password, role, phone, gender, birth_date, avatar, created_at, updated_at)
-            VALUES 
-            (:name, :email, :password, :role, :phone, :gender, :birth_date, :avatar, NOW(), NOW())";
+    $nome = trim($_POST["nome"] ?? "");
+    $sobrenome = trim($_POST["sobrenome"] ?? "");
+    $email = trim($_POST["email"] ?? "");
+    $senha = $_POST["senha"] ?? "";
 
-    $db->exec($sql, [
-        ":name" => $nome . " " . $sobrenome,
+    if (empty($nome) || empty($email) || strlen($senha) < 6) {
+        throw new Exception("Dados insuficientes para cadastro.");
+    }
+
+    /* LÓGICA DE UPLOAD */
+    $avatar = null;
+    if (isset($_FILES["foto"]) && $_FILES["foto"]["error"] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES["foto"]["name"], PATHINFO_EXTENSION));
+        $pasta_destino = __DIR__ . "/../uploads/fotos/";
+        if (!is_dir($pasta_destino))
+            mkdir($pasta_destino, 0755, true);
+
+        $avatar = "user_" . uniqid() . "." . $ext;
+        move_uploaded_file($_FILES["foto"]["tmp_name"], $pasta_destino . $avatar);
+    }
+
+    $conn = getConexao();
+    $conn->beginTransaction();
+
+    // 1. Insert tb_users
+    $sqlUser = "INSERT INTO tb_users (user_name, user_email, user_password, created_at, updated_at) 
+                VALUES (:name, :email, :pass, NOW(), NOW())";
+    $stmt = $conn->prepare($sqlUser);
+    $stmt->execute([
+        ":name" => $nome,
         ":email" => $email,
-        ":password" => password_hash($senha, PASSWORD_DEFAULT),
-        ":role" => 'user', // Valor para a coluna 'role'
-        ":phone" => $telefone,
-        ":gender" => $genero,
-        ":birth_date" => $dataNasc,
-        ":avatar" => $avatar
+        ":pass" => password_hash($senha, PASSWORD_DEFAULT)
     ]);
 
-    echo json_encode(["sucesso" => true, "mensagem" => "Cadastro realizado com sucesso!"]);
+    $userId = $conn->lastInsertId();
 
-} catch (PDOException $e) {
-    if ($e->getCode() == 23000) {
-        echo json_encode(["sucesso" => false, "mensagem" => "Este e-mail já está cadastrado."]);
-    } else {
-        error_log($e->getMessage());
-        echo json_encode(["sucesso" => false, "mensagem" => "Erro ao salvar no banco de dados."]);
-    }
+    // 2. Insert tb_profiles 
+    $sqlProfile = "INSERT INTO tb_profiles (user_id, profile_name, profile_photo, created_at, updated_at) 
+                   VALUES (:uid, :pname, :photo, NOW(), NOW())";
+    $stmtP = $conn->prepare($sqlProfile);
+    $stmtP->execute([
+        ":uid" => $userId,
+        ":pname" => $nome . " " . $sobrenome,
+        ":photo" => $avatar
+    ]);
+
+    $conn->commit();
+    echo json_encode(["sucesso" => true, "mensagem" => "Cadastro realizado com sucesso!"]);
+} catch (Exception $e) {
+    if (isset($conn))
+        $conn->rollBack();
+    echo json_encode(["sucesso" => false, "mensagem" => $e->getMessage()]);
 }

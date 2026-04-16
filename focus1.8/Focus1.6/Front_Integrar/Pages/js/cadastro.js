@@ -1,142 +1,76 @@
-/* Alterna entre exibir ou ocultar a senha */
-/*Corrigido*/
+/* Toggle Senha */
+//corrigido
 function toggleSenha(id, btn) {
-  const input = document.getElementById(id);
-  const icon = btn.querySelector('i');
-  if (input.type === 'password') {
-    input.type = 'text';
-    icon.classList.replace('fa-eye', 'fa-eye-slash');
-  } else {
-    input.type = 'password';
-    icon.classList.replace('fa-eye-slash', 'fa-eye');
-  }
+    const input = document.getElementById(id);
+    const icon = btn.querySelector('i');
+    input.type = input.type === 'password' ? 'text' : 'password';
+    icon.classList.toggle('fa-eye');
+    icon.classList.toggle('fa-eye-slash');
 }
 
-/* Executa scripts após carregar o DOM */
 document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById('formCadastro');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const alerta = document.getElementById('alerta');
 
-  /* Data de nascimento */
-  const inputData = document.getElementById('data-nascimento');
-  const aviso = document.getElementById('aviso');
-  const hoje = new Date();
+    /* FOTO CLICÁVEL */
+    const inputFoto = document.getElementById('foto');
+    const fotoWrapper = document.getElementById('fotoWrapper');
+    const fotoPreview = document.getElementById('fotoPreview');
+    const fotoPlaceholder = document.getElementById('fotoPlaceholder');
 
-  /* Define limites de idade no calendário HTML */
-  const limiteMin = new Date();
-  limiteMin.setFullYear(limiteMin.getFullYear() - 120);
-  inputData.min = limiteMin.toISOString().split('T')[0];
-  inputData.max = hoje.toISOString().split('T')[0];
+    fotoWrapper?.addEventListener('click', () => {
+        inputFoto.click();
+    });
 
-  /* Valida se o usuário é maior de idade */
-  inputData.addEventListener('change', function () {
-    if (!this.value) { aviso.textContent = ''; return; }
-    const dataSel = new Date(this.value);
-    let idade = hoje.getFullYear() - dataSel.getFullYear();
-    const m = hoje.getMonth() - dataSel.getMonth();
-    if (m < 0 || (m === 0 && hoje.getDate() < dataSel.getDate())) idade--;
-    if (idade < 18) {
-      aviso.textContent = 'É necessário ter pelo menos 18 anos.';
-      this.value = '';
-    } else {
-      aviso.textContent = '';
-    }
-  });
+    /* Preview da Foto ao selecionar */
+    inputFoto?.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                fotoPreview.src = e.target.result;
+                fotoPreview.style.display = 'block';
+                fotoPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
 
-  /* Confirmação de senha */
-  const inputSenha = document.getElementById('senha');
-  const inputConfirma = document.getElementById('confirma-senha');
-  const avisoSenha = document.getElementById('aviso-senha');
+    /* Envio via AJAX */
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
-  /* Verifica se os campos de senha coincidem */
-  function verificarSenhas() {
-    if (!inputConfirma.value) { avisoSenha.textContent = ''; return; }
-    avisoSenha.textContent = inputSenha.value !== inputConfirma.value
-      ? 'As senhas não coincidem.'
-      : '';
-  }
+        btnEnviar.disabled = true;
+        btnEnviar.textContent = 'Enviando...';
+        alerta.style.display = 'none';
 
-  inputSenha.addEventListener('input', verificarSenhas);
-  inputConfirma.addEventListener('input', verificarSenhas);
+        try {
+            const formData = new FormData(this);
+            const response = await fetch('php/cadastro.php', {
+                method: 'POST',
+                body: formData
+            });
 
-  /* ── Foto preview ── */
-  const inputFoto = document.getElementById('foto');
-  const fotoWrapper = document.getElementById('fotoWrapper');
-  const fotoPreview = document.getElementById('fotoPreview');
-  const fotoPlaceholder = document.getElementById('fotoPlaceholder');
+            const result = await response.json();
 
-  /* Aciona seletor de arquivos ao clicar no container */
-  fotoWrapper.addEventListener('click', () => inputFoto.click());
+            if (result.sucesso) {
+                alerta.className = 'alerta sucesso';
+                alerta.textContent = result.mensagem;
+                alerta.style.display = 'block';
+                form.reset();
+                setTimeout(() => window.location.href = 'login.html', 2000);
+            } else {
+                throw new Error(result.mensagem);
+            }
 
-  /* Processa e exibe miniatura da imagem selecionada */
-  inputFoto.addEventListener('change', function () {
-    const arquivo = this.files[0];
-    if (!arquivo) return;
-    if (arquivo.size > 5 * 1024 * 1024) {
-      mostrarAlerta('A imagem deve ter no máximo 5 MB.', 'erro');
-      this.value = '';
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      fotoPreview.src = e.target.result;
-      fotoPreview.style.display = 'block';
-      fotoPlaceholder.style.display = 'none';
-    };
-    reader.readAsDataURL(arquivo);
-  });
-
-  /* Máscara telefone */
-  /* Formata número de telefone enquanto o usuário digita */
-  document.getElementById('telefone').addEventListener('input', function () {
-    let v = this.value.replace(/\D/g, '').slice(0, 11);
-    v = v.replace(/(\d{2})(\d)/, '($1) $2')
-      .replace(/(\d{5})(\d{1,4})$/, '$1-$2');
-    this.value = v;
-  });
-
-  /*Envio AJAX  */
-  /* Gerencia submissão do formulário via requisição assíncrona */
-  document.getElementById('formCadastro').addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    if (inputSenha.value !== inputConfirma.value) {
-      mostrarAlerta('As senhas não coincidem.', 'erro');
-      return;
-    }
-
-    /* Desabilita botão para evitar múltiplos envios */
-    const btn = document.getElementById('btnEnviar');
-    btn.disabled = true;
-    btn.textContent = 'Criando conta...';
-
-    try {
-      /* Envia dados para o processamento em PHP */
-      const res = await fetch('php/cadastro.php', { method: 'POST', body: new FormData(this) });
-      const data = await res.json();
-
-      if (data.sucesso) {
-        mostrarAlerta(data.mensagem, 'sucesso');
-        this.reset();
-        fotoPreview.style.display = 'none';
-        fotoPreview.src = '';
-        fotoPlaceholder.style.display = 'flex';
-        setTimeout(() => window.location.href = 'login.html', 2000);
-      } else {
-        mostrarAlerta(data.mensagem, 'erro');
-      }
-    } catch {
-      mostrarAlerta('Erro de conexão com o servidor. Verifique se o PHP está ativo.', 'erro');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Criar conta';
-    }
-  });
-
-  /* Exibe mensagens de alerta no topo da página */
-  function mostrarAlerta(msg, tipo) {
-    const a = document.getElementById('alerta');
-    a.textContent = msg;
-    a.className = tipo;
-    a.style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+        } catch (error) {
+            alerta.className = 'alerta erro';
+            alerta.textContent = error.message || "Erro ao cadastrar.";
+            alerta.style.display = 'block';
+        } finally {
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = 'Criar conta';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    });
 });

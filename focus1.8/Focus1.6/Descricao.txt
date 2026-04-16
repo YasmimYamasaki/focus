@@ -8,11 +8,3 @@ Estrutura escalável para futuras melhorias
 O sistema foi desenvolvido como projeto acadêmico na área de Desenvolvimento de Sistemas, aplicando boas práticas de programação, organização de código e modelagem de banco de dados.
 
 
-
-Alterei a estrutura do painel ADM para 3 arquivos separados na pasta Pages, PHP e JS
-corrigi a estrutura de postgreSQL para MySQL
-Alterei as tabelas de user, e criei a de tickets
-Criei o sistema de direcionamento baseado em cargo
--alterar baseado no que o frontend entregar agr
-
-criar um campo de perfil do usuario para usar a tabela profile

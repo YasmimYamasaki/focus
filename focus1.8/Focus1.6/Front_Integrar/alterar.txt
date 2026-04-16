@@ -1,5 +1,10 @@
 atualizar o css do instrução e planos
-atualizar o banco
-criar tela de perfil do user
+cirar tela de perfil do user
 criar tela de gerenciar do ADM
-Classe lê objeto, usar seta -> e nao []
+implementar novas telas e seus respectivos codigos de backend
+Fazer uma tela de cadastro de adm (possivelmente)
+nessa possivel tela, o adm pode conceder privilegios de adm a qualquer id_user que ele quiser
+
+IMPORTANTE:
+*Classe do MySQL lê objeto, usar seta -> e nao []
+

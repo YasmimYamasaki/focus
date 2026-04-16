@@ -1,93 +1,64 @@
 <?php
-error_reporting(0);
 header('Content-Type: application/json; charset=utf-8');
-//Corrigido
+ini_set('display_errors', 0);
 
 require_once __DIR__ . '/MySQLClass.php';
 $db = new MySQLClass();
 
 $metodo = $_SERVER['REQUEST_METHOD'];
-$acao   = $_GET['acao'] ?? '';
-$listar = $_GET['listar'] ?? '';
+$acao = $_GET['acao'] ?? '';
 
-/* LISTAR CHAMADOS */
-if ($metodo === 'GET' && $listar === '1') {
-    $tickets = $db->search("SELECT id, name, email, category, subject, message, priority, status, created_at FROM support_tickets ORDER BY created_at DESC LIMIT 20");
-    echo json_encode(['sucesso' => true, 'tickets' => $tickets ?: []]);
-    exit;
-}
-
-/* LOGIN ADMINISTRATIVO */
+// LOGIN ADMINISTRATIVO 
 if ($metodo === 'POST' && $acao === 'login') {
     $email = trim($_POST['email'] ?? '');
     $senha = $_POST['senha'] ?? '';
 
-    $usuario = $db->search("SELECT id, password, role FROM users WHERE email = ? LIMIT 1", [$email]);
+    $sql = "SELECT u.user_id, u.user_password, a.adm_id 
+            FROM tb_users u 
+            INNER JOIN tb_admins a ON u.user_id = a.user_id 
+            WHERE u.user_email = ? LIMIT 1";
 
-    if ($usuario && count($usuario) > 0) {
-        $user = $usuario[0];
+    $usuario = $db->search($sql, [$email], true);
 
-        $hash  = isset($user->password) ? $user->password : $user['password'];
-        $role  = isset($user->role) ? $user->role : $user['role'];
-        $uid   = isset($user->id) ? $user->id : $user['id'];
+    if ($usuario && password_verify($senha, $usuario->user_password)) {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+        $_SESSION['admin_id'] = $usuario->adm_id;
+        $_SESSION['role'] = 'admin';
 
-        if (password_verify($senha, $hash)) {
-            if ($role === 'admin') {
-                if (session_status() === PHP_SESSION_NONE) session_start();
-                $_SESSION['admin_id'] = $uid;
-                $_SESSION['role']     = 'admin';
-
-                echo json_encode([
-                    'sucesso' => true,
-                    'role'    => 'admin',
-                    'mensagem' => 'Acesso autorizado!'
-                ]);
-            } else {
-                http_response_code(403);
-                echo json_encode(['sucesso' => false, 'mensagem' => 'Acesso negado: privilégios insuficientes.']);
-            }
-        } else {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail ou senha incorretos.']);
-        }
+        echo json_encode(['sucesso' => true, 'mensagem' => 'Acesso autorizado! Redirecionando...']);
     } else {
-        echo json_encode(['sucesso' => false, 'mensagem' => 'Usuário não encontrado.']);
+        echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail/Senha incorretos ou privilégio insuficiente.']);
     }
     exit;
 }
 
-/* ATUALIZAR STATUS */
-if ($metodo === 'POST' && $acao === 'status') {
-    $id = intval($_POST['id'] ?? 0);
-    $status = trim($_POST['status'] ?? '');
-    $db->exec("UPDATE support_tickets SET status = ?, updated_at = NOW() WHERE id = ?", [$status, $id]);
-    echo json_encode(['sucesso' => true]);
+// LISTAGEM DE CHAMADOS 
+if ($metodo === 'GET' && isset($_GET['listar'])) {
+    $sql = "SELECT call_id, call_code, call_subject, call_priority, call_status, created_at 
+            FROM tb_calls ORDER BY created_at DESC LIMIT 20";
+    $tickets = $db->search($sql);
+    echo json_encode(['sucesso' => true, 'tickets' => $tickets ?: []]);
     exit;
 }
 
-/* SEGURANÇA */
-if ($metodo !== 'POST') {
-    http_response_code(405);
-    exit(json_encode(['sucesso' => false, 'mensagem' => 'Método não permitido.']));
-}
+//  CRIAR NOVO CHAMADO 
+if ($metodo === 'POST' && empty($acao)) {
+    $assunto = trim($_POST['assunto'] ?? '');
+    $mensagem = trim($_POST['mensagem'] ?? '');
+    $prioridade = $_POST['prioridade'] ?? 'low';
 
-/* NOVO CHAMADO  */
-$nome       = trim($_POST['nome'] ?? '');
-$email      = trim($_POST['email'] ?? '');
-$mensagem   = trim($_POST['mensagem'] ?? '');
+    $call_code = "CALL-" . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
 
-if (strlen($nome) < 2 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    http_response_code(422);
-    exit(json_encode(['sucesso' => false, 'mensagem' => 'Dados inválidos.']));
-}
+    try {
+        $sql = "INSERT INTO tb_calls (call_code, profile_id, call_subject, call_message, call_priority, call_status) 
+                VALUES (?, NULL, ?, ?, ?, 'pending')";
 
-try {
-    $db->exec(
-        "INSERT INTO support_tickets (name, email, category, subject, message, priority, status, ip_address, created_at, updated_at) 
-        VALUES (?, ?, ?, ?, ?, ?, 'aberto', ?, NOW(), NOW())",
-        [$nome, $email, $_POST['categoria'], $_POST['assunto'], $mensagem, $_POST['prioridade'], $_SERVER['REMOTE_ADDR']]
-    );
-    echo json_encode(['sucesso' => true, 'mensagem' => 'Chamado aberto com sucesso!']);
-} catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Erro interno ao salvar.']);
+        $db->exec($sql, [$call_code, $assunto, $mensagem, $prioridade]);
+
+        echo json_encode(['sucesso' => true, 'mensagem' => "Chamado #$call_code enviado!"]);
+    } catch (Exception $e) {
+        echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao salvar: ' . $e->getMessage()]);
+    }
+    exit;
 }

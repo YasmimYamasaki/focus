@@ -2,7 +2,8 @@
 
 require_once __DIR__ . "/conexao.php";
 
-class MySQLClass {
+class MySQLClass
+{
 
     private $conn;
 

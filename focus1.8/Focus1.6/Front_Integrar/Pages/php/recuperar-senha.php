@@ -1,114 +1,67 @@
 <?php
-//Corrigido
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//corrigido
+header('Content-Type: application/json; charset=utf-8');
+ini_set('display_errors', 0);
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
-use PHPMailer\PHPMailer\SMTP;
-
-require __DIR__ . '/../PHPMailer/Exception.php';
-require __DIR__ . '/../PHPMailer/PHPMailer.php';
-require __DIR__ . '/../PHPMailer/SMTP.php';
-require_once __DIR__ . '/senha_email.php'; 
-require_once __DIR__ . "/MySQLClass.php";
-
-header('Content-Type: application/json; charset=utf-8');
-
-
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['sucesso' => false, 'mensagem' => 'Método não permitido.']);
-    exit;
-}
-
-$email = trim($_POST['email'] ?? '');
-
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    http_response_code(422);
-    echo json_encode(['sucesso' => false, 'mensagem' => 'E-mail inválido.']);
-    exit;
-}
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 try {
+    require_once __DIR__ . '/../PHPMailer/Exception.php';
+    require_once __DIR__ . '/../PHPMailer/PHPMailer.php';
+    require_once __DIR__ . '/../PHPMailer/SMTP.php';
+    require_once __DIR__ . '/senha_email.php';
+    require_once __DIR__ . '/MySQLClass.php';
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST')
+        throw new Exception('Método inválido.');
+
+    $email = trim($_POST['email'] ?? '');
     $db = new MySQLClass();
+    $usuario = $db->search("SELECT user_id, user_name FROM tb_users WHERE user_email = ? LIMIT 1", [$email], true);
 
-    /* BUSCAR USUÁRIO PELO EMAIL */
-    $usuario = $db->search(
-        "SELECT id, name FROM users WHERE email = ? LIMIT 1",
-        [$email],
-        true
-    );
-
-    // Resposta genérica por segurança
     if (!$usuario) {
-        echo json_encode([
-            'sucesso'  => true,
-            'mensagem' => 'Se este e-mail estiver cadastrado, você receberá um link em breve.'
-        ]);
+        echo json_encode(['sucesso' => true, 'mensagem' => 'Se o e-mail existir, você receberá o link.']);
         exit;
     }
 
-    /* GERAR TOKEN SEGURO */
     $token = bin2hex(random_bytes(32));
-    $expiracao = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    $db->exec("INSERT INTO tb_tokens (user_id, token_content, sent_at) VALUES (?, ?, NOW())", [$usuario->user_id, $token]);
 
-    /* SALVAR TOKEN NO BANCO */
-    $db->exec(
-        "UPDATE users SET reset_token = ?, reset_token_exp = ? WHERE id = ?",
-        [$token, $expiracao, $usuario->id]
-    );
-
-    /* CONFIGURAÇÃO DE ENVIO COM PHPMAILER */
     $mail = new PHPMailer(true);
-
-    // Configurações do Servidor
     $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com';
-    $mail->SMTPAuth   = true;
-    $mail->Username   = USER;
-    $mail->Password   = PWD;  
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = 587;
-    $mail->CharSet    = 'UTF-8';
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = USER;
+    $mail->Password = PWD;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+    $mail->Port = 465;
+    $mail->CharSet = 'UTF-8';
+    $mail->SMTPOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
 
-    // Destinatário
-    $mail->setFrom(USER, 'Equipe Focus');
-    $mail->addAddress($email, $usuario->name);
-
-    // Conteúdo em HTML
-    $link = "http://localhost/focus1.8/Focus1.6/Front_Integrar/Pages/nova-senha.html?token=" . urlencode($token);
+    $mail->setFrom(USER, 'Focus Study');
+    $mail->addAddress($email, $usuario->user_name);
     $mail->isHTML(true);
-    $mail->Subject = "Recuperação de senha — Focus";
-    
-    $mail->Body = "
-        <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
-            <h2>Olá, {$usuario->name}!</h2>
-            <p>Recebemos uma solicitação para redefinir sua senha.</p>
-            <p>Clique no link abaixo (válido por 1 hora) para criar uma nova senha:</p>
-            <p><a href='{$link}' style='display:inline-block; padding:10px 20px; background-color:#6a11cb; color:white; text-decoration:none; border-radius:5px;'>Redefinir Senha</a></p>
-            <p>Se não foi você, ignore este e-mail.</p>
-            <hr>
-            <p style='font-size: 12px;'>Equipe Focus</p>
-        </div>";
+    $mail->Subject = "Recuperacao de Senha - Focus Study";
 
-    $mail->AltBody = "Olá, {$usuario->name}! Copie e cole o link no navegador para redefinir sua senha: {$link}";
+    $link = "http://localhost/focus1.8/Focus1.6/Front_Integrar/Pages/nova-senha.html?token=" . $token;
+
+    // BOTÃO NO E-MAIL
+    $mail->Body = "
+    <div style='font-family: sans-serif; text-align: center; padding: 20px; border: 1px solid #ddd;'>
+        <h2>Olá, {$usuario->user_name}</h2>
+        <p>Clique no botão abaixo para recuperar sua senha:</p>
+        <div style='margin: 30px 0;'>
+            <a href='{$link}' style='background: #6a11cb; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                REDEFINIR SENHA
+            </a>
+        </div>
+        <p style='font-size: 11px; color: #777;'>Se não solicitou, ignore este e-mail.</p>
+    </div>";
 
     $mail->send();
-
-    echo json_encode([
-        'sucesso'  => true,
-        'mensagem' => 'Se este e-mail estiver cadastrado, você receberá um link em breve.'
-    ]);
-
-} catch (Exception $e) {
-    // Log interno do erro para averiguar
-    error_log("Erro no envio: " . $mail->ErrorInfo);
-
-    http_response_code(500);
-    echo json_encode([
-        'sucesso'  => false,
-        'mensagem' => 'Erro interno no servidor.'
-    ]);
+    echo json_encode(['sucesso' => true, 'mensagem' => 'E-mail enviado com sucesso, verifique sua caixa de E-mail!']);
+} catch (PHPMailerException $e) {
+    echo json_encode(['sucesso' => false, 'mensagem' => "Erro de Conexão SMTP: " . $mail->ErrorInfo]);
+} catch (Throwable $e) {
+    echo json_encode(['sucesso' => false, 'mensagem' => "Erro: " . $e->getMessage()]);
 }

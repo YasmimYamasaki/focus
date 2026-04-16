@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', loadTickets);
 
 /*LOAD TICKETS*/
+//corrigido
 async function loadTickets() {
   try {
     const res = await fetch('php/supportController.php');
@@ -32,9 +33,9 @@ function renderTable(tickets) {
 
       <td>
         <select onchange="updateStatus(${t.id}, this.value)">
-          <option value="open" ${t.status==='open'?'selected':''}>Open</option>
-          <option value="in_progress" ${t.status==='in_progress'?'selected':''}>In Progress</option>
-          <option value="resolved" ${t.status==='resolved'?'selected':''}>Resolved</option>
+          <option value="open" ${t.status === 'open' ? 'selected' : ''}>Open</option>
+          <option value="in_progress" ${t.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+          <option value="resolved" ${t.status === 'resolved' ? 'selected' : ''}>Resolved</option>
         </select>
       </td>
 

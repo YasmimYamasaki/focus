@@ -181,6 +181,15 @@
       text-align: center;
     }
 
+    #fotoWrapper {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    #fotoWrapper:hover {
+      opacity: 0.8;
+    }
+
     /* Campos */
     .field {
       margin-bottom: 20px;

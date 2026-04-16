@@ -13,7 +13,6 @@
 
 <body>
 
-  <!-- Header Focus Study -->
   <header class="header">
     <div class="container header-inner">
 
@@ -47,7 +46,6 @@
     </div>
   </header>
 
-  <!-- Conteúdo -->
   <main class="auth-page">
     <div class="auth-bg">
       <div class="auth-blob auth-blob-1"></div>
@@ -56,7 +54,6 @@
 
     <div class="auth-card">
 
-      <!-- Logo no topo do card -->
       <a href="../index.html" class="auth-card-top">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"></circle>
@@ -70,9 +67,8 @@
 
       <div id="alerta"></div>
 
-      <form id="formCadastro" enctype="multipart/form-data" novalidate >
+      <form id="formCadastro" enctype="multipart/form-data" novalidate>
 
-        <!-- Foto -->
         <div class="foto-area">
           <div class="foto-preview-wrapper" id="fotoWrapper" title="Clique para escolher uma foto">
             <div class="foto-placeholder" id="fotoPlaceholder">
@@ -91,8 +87,7 @@
           <span class="foto-info">JPG, PNG, GIF ou WEBP · Máx. 5 MB · Opcional</span>
         </div>
 
-        <!-- Dados pessoais -->
-        <div class="field-section">Dados pessoais</div>
+        <div class="field-section">Identificação</div>
 
         <div class="field-row">
           <div class="field">
@@ -110,37 +105,7 @@
           </div>
         </div>
 
-        <div class="field-row">
-          <div class="field">
-            <label for="data-nascimento">Data de Nascimento</label>
-            <div class="field-wrap">
-              <input type="date" id="data-nascimento" name="data_nascimento" required />
-            </div>
-            <div class="field-error" id="aviso"></div>
-          </div>
-
-          <div class="field">
-            <label for="genero">Gênero</label>
-            <div class="field-wrap select-wrap">
-              <select id="genero" name="genero" required>
-                <option value="feminino">Feminino</option>
-                <option value="masculino">Masculino</option>
-                <option value="outro">Prefiro não informar</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contato -->
-        <div class="field-section">Contato</div>
-
-        <div class="field">
-          <label for="telefone">Telefone</label>
-          <div class="field-wrap">
-            <input type="tel" id="telefone" name="telefone" placeholder="(XX) XXXXX-XXXX" maxlength="15" required
-              autocomplete="tel" />
-          </div>
-        </div>
+        <div class="field-section">Conta</div>
 
         <div class="field">
           <label for="email">E-mail</label>
@@ -149,7 +114,6 @@
           </div>
         </div>
 
-        <!-- Senha -->
         <div class="field-section">Segurança</div>
 
         <div class="field">
