@@ -1,21 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-    <title>Confirmar Código</title>
-    <link rel="stylesheet" href="">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmar Código · Focus Study</title>
+  <link rel="icon" type="image/png" href="images/poppy.png">
+    <link rel="stylesheet" href="css/codigo-rec-senha.css" />
 </head>
 <body>
+ 
+  <!-- Fundo -->
+  <div class="bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+  <div class="grid-overlay"></div>
+ 
+  <!-- Card principal -->
+  <div class="card-wrap">
+ 
+    <!-- Logo -->
+    <a href="../index.html" class="logo-top">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/>
+        <polyline points="12 6 12 12 16 14"/>
+      </svg>
+      Focus Study
+    </a>
+ 
+    <div class="card">
+ 
+      <!-- Ícone -->
+      <div class="card-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="2" y="7" width="20" height="14" rx="3"/>
+          <path d="M16 3H8a2 2 0 0 0-2 2v2h12V5a2 2 0 0 0-2-2z"/>
+          <line x1="12" y1="12" x2="12" y2="16"/>
+          <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+        </svg>
+      </div>
+ 
+      <h1 class="card-title">Verificar Identidade</h1>
+      <p class="card-subtitle">
+        Enviamos um código de 6 dígitos para<br>
+        <strong>seu e-mail cadastrado</strong>
+      </p>
+ 
+      <!-- Feedback (oculto por padrão, JS controla) -->
+      <div class="feedback error" id="feedback-error">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span id="feedback-error-text">Código inválido. Tente novamente.</span>
+      </div>
+ 
+      <div class="feedback success" id="feedback-success">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Código verificado! Redirecionando…
+      </div>
+ 
+      <!-- Formulário -->
+      <form method="post" id="otp-form" onsubmit="handleSubmit(event)" autocomplete="off">
+ 
+        <label class="otp-label" for="otp-1">Código de verificação</label>
+ 
+        <!-- Inputs OTP: 3 + separador + 3 -->
+        <div class="otp-group" id="otp-group">
+          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="otp-1" aria-label="Dígito 1" />
+          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="otp-2" aria-label="Dígito 2" />
+          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="otp-3" aria-label="Dígito 3" />
+          <span class="otp-sep">—</span>
+          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="otp-4" aria-label="Dígito 4" />
+          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="otp-5" aria-label="Dígito 5" />
+          <input class="otp-input" type="text" inputmode="numeric" maxlength="1" id="otp-6" aria-label="Dígito 6" />
+        </div>
+ 
+        <!-- Campo hidden com o código completo -->
+        <input type="hidden" name="codigo" id="codigo-hidden" />
+ 
+        <button type="submit" class="btn-submit" id="btn-submit" disabled>
+          Validar Código
+        </button>
+ 
+      </form>
+ 
+      <!-- Reenviar -->
+      <div class="resend-row">
+        Não recebeu?
+        <button class="resend-btn" id="resend-btn" onclick="resendCode()" disabled>
+          Reenviar em <span class="resend-timer" id="resend-timer">30s</span>
+        </button>
+      </div>
+ 
+    </div><!-- /card -->
+ 
+    <!-- Voltar -->
+    <a href="login.html" class="back-link">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+      Voltar ao login
+    </a>
+ 
+  </div>
 
-<form method="post">
-
-    <h2>Confirmar Código</h2>
-
-    <label for="codigo">Digite o código recebido:</label>
-    <input type="text" name="codigo" maxlength="6" size="10"><br><p>
-
-    <input type="submit" value="Validar Código">
-
-</form>
-
+    <script src="js/script.js"></script>
+  <script src="js/codigo-rec-senha.js"></script>
+ 
 </body>
 </html>

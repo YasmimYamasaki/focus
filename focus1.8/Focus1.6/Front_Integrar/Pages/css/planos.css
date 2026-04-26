@@ -1,0 +1,821 @@
+/* ══════════════════════════════════════════
+   PLANOS.CSS — Focus Study
+   Segue identidade visual do styles.css
+══════════════════════════════════════════ */
+
+/* ── Keyframe exclusivo: shimmer no badge ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(30px, -20px) scale(1.05); }
+  66%       { transform: translate(-20px, 15px) scale(0.97); }
+}
+
+@keyframes card-rise {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(6,182,212,0.25), 0 0 0 1px rgba(6,182,212,0.15); }
+  50%       { box-shadow: 0 0 48px rgba(6,182,212,0.45), 0 0 0 1px rgba(6,182,212,0.3); }
+}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+
+.plans-hero {
+  position: relative;
+  overflow: hidden;
+  background: var(--primary);
+  padding: 140px 24px 80px;
+  text-align: center;
+}
+
+/* blobs reutilizados do styles.css — reposicionados para o hero */
+.plans-hero .hero-background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.plans-hero .blob-1 {
+  width: 480px;
+  height: 480px;
+  background: rgba(6,182,212,0.12);
+  top: -160px;
+  left: -120px;
+  animation: blob-drift 8s ease-in-out infinite, pulse 4s ease-in-out infinite;
+}
+
+.plans-hero .blob-2 {
+  width: 420px;
+  height: 420px;
+  background: rgba(236,72,153,0.10);
+  bottom: -140px;
+  right: -100px;
+  animation: blob-drift 10s ease-in-out infinite reverse, pulse 4s ease-in-out 1s infinite;
+}
+
+.plans-hero-content {
+  position: relative;
+  z-index: 10;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Badge "Planos & Preços" */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 18px;
+  border: 1px solid rgba(6,182,212,0.35);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  background: rgba(6,182,212,0.07);
+  margin-bottom: 28px;
+  animation: fade-in 0.6s ease-out forwards;
+  /* shimmer sutil */
+  background-image: linear-gradient(
+    90deg,
+    rgba(6,182,212,0.07) 0%,
+    rgba(6,182,212,0.18) 50%,
+    rgba(6,182,212,0.07) 100%
+  );
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite, fade-in 0.6s ease-out forwards;
+}
+
+.plans-hero h1 {
+  font-size: clamp(48px, 9vw, 88px);
+  font-weight: 900;
+  letter-spacing: -3px;
+  line-height: 1.02;
+  margin-bottom: 20px;
+  animation: fade-in 0.8s ease-out 0.1s backwards;
+}
+
+.plans-hero p {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto 40px;
+  animation: fade-in 0.8s ease-out 0.25s backwards;
+}
+
+/* ── Billing toggle ── */
+.billing-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 5px;
+  animation: fade-in 0.8s ease-out 0.4s backwards;
+}
+
+.billing-btn {
+  padding: 9px 24px;
+  border: none;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text-muted);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.billing-btn.active {
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  color: #fff;
+  box-shadow: 0 2px 16px rgba(6,182,212,0.35);
+}
+
+.billing-btn:not(.active):hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.06);
+}
+
+.save-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(6,182,212,0.15);
+  color: var(--cyan);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  transition: var(--transition);
+}
+
+.billing-btn.active .save-badge {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════
+   CARDS DE PLANOS
+══════════════════════════════════════════ */
+
+.plans-section {
+  padding: 40px 0 100px;
+  background: var(--primary);
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+/* ── Card base ── */
+.plan-card {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  padding: 36px 32px 32px;
+  position: relative;
+  transition: var(--transition);
+  opacity: 0;
+  animation: card-rise 0.7s ease-out forwards;
+}
+
+.plan-card:nth-child(1) { animation-delay: 0.05s; }
+.plan-card:nth-child(2) { animation-delay: 0.15s; }
+.plan-card:nth-child(3) { animation-delay: 0.25s; }
+
+.plan-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(6,182,212,0.3);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(6,182,212,0.1);
+}
+
+/* ── Card em destaque (Pro) ── */
+.plan-card.featured {
+  border-color: rgba(6,182,212,0.5);
+  background: linear-gradient(160deg, #1e2a2d 0%, var(--secondary) 60%);
+  animation: card-rise 0.7s ease-out 0.15s forwards, glow-pulse 3s ease-in-out 1s infinite;
+  /* ocupa mais espaço verticalmente para se destacar */
+  padding-top: 44px;
+}
+
+.plan-card.featured:hover {
+  border-color: var(--cyan);
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.5),
+    0 0 40px rgba(6,182,212,0.2),
+    0 0 0 1px rgba(6,182,212,0.3);
+  transform: translateY(-10px);
+}
+
+/* Rótulo "Mais Popular" */
+.featured-label {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  color: #fff;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(6,182,212,0.35);
+}
+
+/* ── Cabeçalho do card ── */
+.plan-name {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.featured .plan-name {
+  color: var(--cyan);
+}
+
+.plan-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.price-amount {
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--text), var(--text-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.featured .price-amount {
+  background: linear-gradient(135deg, var(--cyan), #7dd3fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.price-period {
+  font-size: 15px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Texto auxiliar anual (ex: "R$182/ano") */
+.price-annual {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  min-height: 18px;
+  margin-bottom: 16px;
+}
+
+.plan-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 28px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+}
+
+/* ── Lista de features ── */
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+/* Item indisponível */
+.plan-features li.feature-dim {
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+
+/* Ícone check */
+.check {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(6,182,212,0.15);
+  border: 1px solid rgba(6,182,212,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cyan);
+}
+
+/* Check rosa (Premium) */
+.check.pink {
+  background: rgba(236,72,153,0.12);
+  border-color: rgba(236,72,153,0.3);
+  color: var(--pink);
+}
+
+/* Ícone cross */
+.cross {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+/* ── CTAs dos planos ── */
+.plan-cta {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 13px 24px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+
+/* Outline (Grátis e Premium) */
+.cta-outline {
+  border: 1.5px solid rgba(6,182,212,0.35);
+  color: var(--cyan);
+  background: transparent;
+}
+
+.cta-outline:hover {
+  background: rgba(6,182,212,0.08);
+  border-color: var(--cyan);
+  box-shadow: 0 0 20px rgba(6,182,212,0.2);
+}
+
+/* Gradiente preenchido (Pro) */
+.cta-gradient {
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  color: #fff;
+  border: none;
+  box-shadow: 0 4px 20px rgba(6,182,212,0.35);
+}
+
+.cta-gradient:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 32px rgba(6,182,212,0.5);
+}
+
+/* ══════════════════════════════════════════
+   FAQ
+══════════════════════════════════════════ */
+
+.faq-section {
+  background: var(--tertiary);
+  padding: 96px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decoração de fundo */
+.faq-section::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(236,72,153,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.faq-section .section-header {
+  margin-bottom: 56px;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 960px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Item de FAQ ── */
+.faq-item {
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.faq-item:hover {
+  border-color: rgba(6,182,212,0.25);
+}
+
+.faq-item.open {
+  border-color: rgba(6,182,212,0.35);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+}
+
+/* Pergunta */
+.faq-q {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  line-height: 1.4;
+  transition: var(--transition);
+}
+
+.faq-q:hover {
+  color: var(--cyan);
+}
+
+.faq-item.open .faq-q {
+  color: var(--cyan);
+}
+
+/* Chevron animado */
+.faq-chevron {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.faq-item.open .faq-chevron {
+  transform: rotate(180deg);
+  color: var(--cyan);
+}
+
+/* Resposta */
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1), padding 0.3s ease;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.7;
+  padding: 0 22px;
+}
+
+.faq-item.open .faq-a {
+  max-height: 300px;
+  padding: 0 22px 20px;
+}
+
+/* ══════════════════════════════════════════
+   FOOTER SOBRESCRITO (herda styles.css)
+   — aqui apenas ajustes específicos de planos
+══════════════════════════════════════════ */
+
+.footer {
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--pink), transparent);
+  opacity: 0.6;
+}
+
+/* ── Footer top grid ── */
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 2fr;
+  gap: 48px;
+  padding: 56px 0 40px;
+}
+
+/* Marca */
+.footer-brand .footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 14px;
+}
+
+.footer-brand .footer-logo .icon {
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+
+.footer-tagline {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+/* Socials */
+.footer-socials {
+  display: flex;
+  gap: 10px;
+}
+
+.social-link {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.social-link:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(6,182,212,0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(6,182,212,0.2);
+}
+
+/* Grupos de nav */
+.footer-nav-group .footer-heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-muted);
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.footer-links a:hover {
+  color: var(--cyan);
+  transform: translateX(3px);
+}
+
+/* Newsletter */
+.footer-newsletter .footer-heading {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.footer-newsletter p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 8px;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 10px 14px;
+  background: var(--secondary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: var(--transition);
+  min-width: 0;
+}
+
+.newsletter-form input::placeholder {
+  color: rgba(160,174,192,0.45);
+}
+
+.newsletter-form input:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(6,182,212,0.1);
+}
+
+.newsletter-form button {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.newsletter-form button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 16px rgba(6,182,212,0.4);
+}
+
+/* Divisor */
+.footer-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 24px;
+}
+
+/* Rodapé inferior */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.footer-bottom-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-bottom-links a {
+  color: var(--text-muted);
+  transition: var(--transition);
+}
+
+.footer-bottom-links a:hover {
+  color: var(--cyan);
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVO
+══════════════════════════════════════════ */
+
+@media (max-width: 1024px) {
+  .plans-grid {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .plan-card.featured {
+    order: -1;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer-newsletter {
+    grid-column: 1 / -1;
+  }
+
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .plans-hero {
+    padding: 120px 20px 64px;
+  }
+
+  .plans-hero h1 {
+    letter-spacing: -1.5px;
+  }
+
+  .billing-toggle {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .plans-section {
+    padding: 32px 0 72px;
+  }
+
+  .plan-card {
+    padding: 28px 24px 24px;
+  }
+
+  .faq-section {
+    padding: 72px 0;
+  }
+
+  .footer-top {
+    grid-template-columns: 1fr;
+    padding: 40px 0 32px;
+    gap: 28px;
+  }
+
+  .footer-brand { grid-column: unset; }
+  .footer-newsletter { grid-column: unset; }
+
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .footer-bottom-links {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .plans-grid {
+    max-width: 100%;
+  }
+
+  .billing-btn {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  .price-amount {
+    font-size: 40px;
+  }
+}
