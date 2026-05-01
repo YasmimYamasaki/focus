@@ -24,16 +24,27 @@ const inputSenha = document.getElementById('senha');
 const inputConfirma = document.getElementById('confirma');
 const avisoSenha = document.getElementById('aviso-senha');
 
+//Função de verificação de senha
 function verificarSenhas() {
-    if (!inputConfirma.value) { avisoSenha.textContent = ''; return; }
-    avisoSenha.textContent = inputSenha.value !== inputConfirma.value
-        ? 'As senhas não coincidem.' : '';
-    avisoSenha.style.color = 'red';
-}
+    const senha = inputSenha.value;
+    const confirma = inputConfirma.value;
 
+    if (confirma.length == 0) {
+        avisoSenha.textContent = '';
+        return;
+    }
+    if (senha !== confirma) {
+        avisoSenha.textContent = 'As senhas não coincidem. ';
+        avisoSenha.style.color = 'red';
+    }
+    else {
+        avisoSenha.textContent = 'As senhas coincidem!'
+        avisoSenha.style.color = 'green'
+    }
+}
 inputSenha.addEventListener('input', verificarSenhas);
 inputConfirma.addEventListener('input', verificarSenhas);
-
+//evento do btn de submit
 form.addEventListener('submit', async function (e) {
     e.preventDefault();
 
@@ -52,14 +63,17 @@ form.addEventListener('submit', async function (e) {
 
     const fd = new FormData(this);
     fd.append('token', token);
-
+//fetch de direcionamento
     try {
         const res = await fetch('php/nova-senha.php', {
             method: 'POST',
             body: fd
         });
 
-        const data = await res.json();
+        const text = await res.text();
+        console.log("Debug BackEnd:", text);
+        const data = JSON.parse(text);
+
         mostrarAlerta(data.mensagem, data.sucesso ? 'sucesso' : 'erro');
 
         if (data.sucesso) {

@@ -1,4 +1,4 @@
-/* ── Intersection Observer para animações de entrada ── */
+/* Intersection Observer para animações de entrada */
 let lastScrollY = window.scrollY;
 const header = document.querySelector('header');
 
@@ -70,7 +70,7 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, observerOptions);
 
-/* ── Inicialização após carregamento do DOM ── */
+/* Inicialização após carregamento do DOM  */
 
 document.addEventListener('DOMContentLoaded', () => {
   // Observar elementos para animação
@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ── Ocultar indicador de scroll ao rolar ── */
+/*  Ocultar indicador de scroll ao rolar  */
 
 const scrollIndicator = document.querySelector('.scroll-indicator');
 
@@ -119,7 +119,7 @@ window.addEventListener('scroll', () => {
   }
 });
 
-/* ── Efeito parallax nos blobs do hero ── */
+/* Efeito parallax nos blobs do hero  */
 
 let ticking = false;
 
@@ -141,7 +141,7 @@ window.addEventListener('scroll', () => {
   ticking = true;
 });
 
-/* ── Logo clicável volta ao topo (apenas na home) ── */
+/* Logo clicável volta ao topo (apenas na home)  */
 
 const logoEl = document.querySelector('.logo');
 if (logoEl && !logoEl.getAttribute('href')) {
@@ -150,10 +150,10 @@ if (logoEl && !logoEl.getAttribute('href')) {
   });
 }
 
-/* ── Toggle do menu mobile ── */
+/* Toggle do menu mobile  */
 
 const navToggle = document.querySelector('.nav-toggle');
-const navMenu   = document.querySelector('.nav');
+const navMenu = document.querySelector('.nav');
 
 navToggle?.addEventListener('click', () => {
   const isOpen = navMenu.classList.toggle('open');
@@ -170,7 +170,7 @@ navMenu?.querySelectorAll('.nav-link').forEach(link => {
   });
 });
 
-/* ── Links âncora com scroll suave ── */
+/* Links âncora com scroll suave */
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', function (e) {

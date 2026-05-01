@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  const DAYS = ['Segunda','Terça','Quarta','Quinta','Sexta','Sábado','Domingo'];
+  const DAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
   const CAT_LABELS = {
     study: '📚 Estudo', exercise: '🏋️ Exercício',
     meal: '🍽️ Refeição', work: '💼 Trabalho',
@@ -14,12 +14,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ── Estado ──
   let weekOffset = 0;
-  let activities = JSON.parse(localStorage.getItem('fs_schedule') || '{}');
+  let activities = {};
 
   // ── Data atual ──
   const dateEl = document.getElementById('current-date');
   if (dateEl) {
-    dateEl.innerText = new Date().toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long' });
+    dateEl.innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
   }
 
   // ── Avatar ──
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     d.setDate(d.getDate() - d.getDay() + 1 + offset * 7);
     const year = d.getFullYear();
     const week = getWeekNumber(d);
-    return `${year}-W${String(week).padStart(2,'0')}`;
+    return `${year}-W${String(week).padStart(2, '0')}`;
   }
 
   function getWeekNumber(d) {
@@ -70,12 +70,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getDayActivities(weekKey, dayIdx) {
-    return activities[dayKey(weekKey, dayIdx)] || [];
-  }
-
-  function setDayActivities(weekKey, dayIdx, arr) {
-    activities[dayKey(weekKey, dayIdx)] = arr;
-    localStorage.setItem('fs_schedule', JSON.stringify(activities));
+    const dates = getWeekDates(weekOffset);
+    const dateKey = dates[dayIdx].toISOString().split('T')[0];
+    return activities[dateKey] || [];
   }
 
   // ── Render ──
@@ -131,33 +128,40 @@ document.addEventListener('DOMContentLoaded', () => {
       acts.forEach(act => {
         const item = document.createElement('div');
         item.className = `activity-item${act.done ? ' done' : ''}`;
-        item.dataset.cat = act.cat;
-        item.dataset.id = act.id;
+        item.dataset.id = act.scheduling_id;
+        if (act.notes) {
+          item.setAttribute('title', `Observação: ${act.notes}`);
+        }
         item.innerHTML = `
-          <div class="act-time">${act.start} – ${act.end}</div>
-          <div class="act-title">${act.title}</div>
-          <div class="act-cat-badge">${CAT_LABELS[act.cat] || act.cat}</div>
-          <div class="act-actions">
-            <button class="act-btn check" title="Concluir">✓</button>
-            <button class="act-btn del" title="Remover">✕</button>
-          </div>
-        `;
+    <div class="act-time">${act.start} – ${act.end}</div>
+    <div class="act-title">${act.title}</div>
+    <div class="act-cat-badge">${CAT_LABELS[act.tag] || '📌 Outro'}</div> 
+    <div class="act-actions">
+        <button class="act-btn check" title="Concluir">✓</button>
+        <button class="act-btn del" title="Remover">✕</button>
+    </div>
+`;
         actsEl.appendChild(item);
 
-        item.querySelector('.act-btn.check').addEventListener('click', e => {
+        // Ação de CONCLUIR
+        item.querySelector('.act-btn.check').addEventListener('click', async (e) => {
           e.stopPropagation();
-          const list = getDayActivities(wk, dayIdx);
-          const idx = list.findIndex(a => a.id === act.id);
-          if (idx > -1) list[idx].done = !list[idx].done;
-          setDayActivities(wk, dayIdx, list);
-          render();
+          await fetch('php/api_horarios.php', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'toggle_done', id: act.scheduling_id })
+          });
+          carregarAtividadesDoBanco();
         });
 
-        item.querySelector('.act-btn.del').addEventListener('click', e => {
+        // Ação de DELETAR
+        item.querySelector('.act-btn.del').addEventListener('click', async (e) => {
           e.stopPropagation();
-          const list = getDayActivities(wk, dayIdx).filter(a => a.id !== act.id);
-          setDayActivities(wk, dayIdx, list);
-          render();
+          if (!confirm("Deseja excluir esta atividade?")) return;
+          await fetch('php/api_horarios.php', {
+            method: 'POST',
+            body: JSON.stringify({ action: 'delete', id: act.scheduling_id })
+          });
+          carregarAtividadesDoBanco();
         });
       });
     });
@@ -205,18 +209,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('modal-act-confirm').addEventListener('click', () => {
     const title = document.getElementById('act-title').value.trim();
     if (!title) { document.getElementById('act-title').focus(); return; }
-    const day = parseInt(document.getElementById('act-day').value);
-    const start = document.getElementById('act-start').value;
-    const end = document.getElementById('act-end').value;
-    const cat = document.getElementById('act-category').value;
-    const notes = document.getElementById('act-notes').value.trim();
 
-    const wk = getWeekKey(weekOffset);
-    const list = getDayActivities(wk, day);
-    list.push({ id: Date.now().toString(), title, start, end, cat, notes, done: false });
-    setDayActivities(wk, day, list);
+    const dados = {
+      title: title,
+      day: document.getElementById('act-day').value,
+      start: document.getElementById('act-start').value,
+      end: document.getElementById('act-end').value,
+      cat: document.getElementById('act-category').value,
+      notes: document.getElementById('act-notes').value.trim(),
+      date: getWeekDates(weekOffset)[document.getElementById('act-day').value].toISOString().split('T')[0]
+    };
+
+    salvarAtividadeNoBanco(dados);
     document.getElementById('modal-activity').classList.remove('open');
-    render();
   });
 
   // ── Limpeza ──
@@ -226,19 +231,63 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('clear-cancel').addEventListener('click', () => {
     document.getElementById('modal-clear').classList.remove('open');
   });
-  document.getElementById('clear-confirm').addEventListener('click', () => {
-    const wk = getWeekKey(weekOffset);
-    for (let i = 0; i < 7; i++) {
-      delete activities[dayKey(wk, i)];
+  document.getElementById('clear-confirm').addEventListener('click', async () => {
+    const dates = getWeekDates(weekOffset);
+    const inicio = dates[0].toISOString().split('T')[0];
+    const fim = dates[6].toISOString().split('T')[0];
+
+    try {
+      const response = await fetch('php/api_horarios.php', {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'clear_week',
+          inicio: inicio,
+          fim: fim
+        })
+      });
+
+      if (response.ok) {
+        document.getElementById('modal-clear').classList.remove('open');
+        carregarAtividadesDoBanco();
+      } else {
+        alert("Erro ao limpar a semana no servidor.");
+      }
+    } catch (err) {
+      console.error("Erro na requisição de limpeza:", err);
+      alert("Erro de conexão ao tentar limpar.");
     }
-    localStorage.setItem('fs_schedule', JSON.stringify(activities));
-    document.getElementById('modal-clear').classList.remove('open');
-    render();
   });
 
   // ── Navegação de semana ──
-  document.getElementById('prev-week').addEventListener('click', () => { weekOffset--; render(); });
-  document.getElementById('next-week').addEventListener('click', () => { weekOffset++; render(); });
+  document.getElementById('prev-week').addEventListener('click', () => { weekOffset--; carregarAtividadesDoBanco(); });
+  document.getElementById('next-week').addEventListener('click', () => { weekOffset++; carregarAtividadesDoBanco(); });
 
-  render();
+  async function carregarAtividadesDoBanco() {
+    const wk = getWeekKey(weekOffset);
+    const dates = getWeekDates(weekOffset);
+    const dataInicio = dates[0].toISOString().split('T')[0]; // Segunda
+    const dataFim = dates[6].toISOString().split('T')[0];    // Domingo
+
+    try {
+      const response = await fetch(`php/api_horarios.php?action=list&inicio=${dataInicio}&fim=${dataFim}`);
+      const dados = await response.json();
+      activities = dados;
+      render();
+    } catch (err) {
+      console.error("Erro ao buscar horários:", err);
+    }
+  }
+
+  async function salvarAtividadeNoBanco(dados) {
+    try {
+      const response = await fetch('php/api_horarios.php', {
+        method: 'POST',
+        body: JSON.stringify({ action: 'create', ...dados })
+      });
+      if (response.ok) carregarAtividadesDoBanco();
+    } catch (err) {
+      alert("Erro ao salvar atividade.");
+    }
+  }
+  carregarAtividadesDoBanco();
 });

@@ -1,5 +1,5 @@
 const prioButtons = document.querySelectorAll('.priority-btn');
-const prioInput = document.getElementById('prioridade');
+const prioInput = document.getElementById('prioridade');//corrigir modal
 
 prioButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -52,28 +52,24 @@ function mostrarAlerta(msg, tipo) {
 }
 
 // Envio de Chamado
-document.getElementById('formContato')?.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnEnviar');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Enviando...';
+async function enviarComPersistencia(formData, tentativas = 3) {
+    for (let i = 0; i < tentativas; i++) {
+        try {
+            const res = await fetch('php/contato.php', { method: 'POST', body: formData });
+            const data = await res.json();
 
-    try {
-        const res = await fetch('php/contato.php', { method: 'POST', body: new FormData(this) });
-        const data = await res.json();
-        mostrarAlerta(data.mensagem, data.sucesso ? 'sucesso' : 'erro');
-        if (data.sucesso) {
-            this.reset();
-            carregarTickets();
+            if (!data.sucesso && data.mensagem.includes("conexão")) {
+                throw new Error("Timeout de rede");
+            }
+
+            return data; // Sucesso total
+        } catch (err) {
+            console.warn(`Tentativa ${i + 1} falhou. Tentando novamente...`);
+            if (i === tentativas - 1) throw err;
+            await new Promise(r => setTimeout(r, 1000));
         }
-    } catch (err) {
-        mostrarAlerta('Erro de conexão.', 'erro');
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
     }
-});
+}
 
 // Login Administrativo
 document.getElementById('formLoginAdmin')?.addEventListener('submit', async function (e) {
@@ -104,15 +100,36 @@ document.getElementById('formLoginAdmin')?.addEventListener('submit', async func
     }
 });
 
+document.getElementById('formContato')?.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnEnviar');
+    btn.disabled = true;
 
-// Função para renderizar a tabela com os nomes de colunas novos
+    try {
+        const formData = new FormData(this);
+        const data = await enviarComPersistencia(formData);
+
+        if (data.sucesso) {
+            mostrarAlerta(data.mensagem, "sucesso");
+            this.reset();
+            carregarTickets(); // Atualiza a lista automaticamente
+        } else {
+            mostrarAlerta(data.mensagem, "erro");
+        }
+    } catch (err) {
+        mostrarAlerta("Falha na comunicação com o servidor.", "erro");
+    } finally {
+        btn.disabled = false;
+    }
+});
+
 async function carregarTickets() {
     const wrap = document.getElementById('tabelaTickets');
     if (!wrap) return;
 
     try {
         const res = await fetch('php/contato.php?listar=1');
-        const rawText = await res.text(); // Lê como texto primeiro por segurança
+        const rawText = await res.text();
         const data = JSON.parse(rawText);
 
         if (!data.tickets || data.tickets.length === 0) {
@@ -120,24 +137,49 @@ async function carregarTickets() {
             return;
         }
 
-        const rows = data.tickets.map(t => `
-            <tr>
-                <td><span class="ticket-id">#${t.call_code}</span></td>
-                <td class="ticket-assunto">${t.subject}</td>
-                <td><span class="badge-status badge-${t.status}">${t.status.toUpperCase()}</span></td>
-                <td><span class="badge-prioridade prio-${t.priority}">${t.priority.toUpperCase()}</span></td>
-                <td style="color:var(--text-muted);font-size:12px;">${new Date(t.created_at).toLocaleDateString('pt-BR')}</td>
-            </tr>`).join('');
+        const rows = data.tickets.map(t => {
+            const traduzirPrio = { 'low': 'baixa', 'medium': 'media', 'high': 'alta' };
+            const prioPT = traduzirPrio[t.priority] || 'baixa';
+
+            const traduzirStatus = { 'pending': 'aberto', 'replied': 'respondido', 'closed': 'fechado' };
+            const statusPT = traduzirStatus[t.status] || 'aberto';
+
+            return `
+                <tr>
+                    <td><span class="ticket-id">#${t.code}</span></td>
+                    <td class="ticket-assunto">${t.subject}</td>
+                    <td><span class="badge-status badge-${statusPT}">${statusPT.toUpperCase()}</span></td>
+                    <td><span class="badge-prioridade prio-${prioPT}">${prioPT.toUpperCase()}</span></td>
+                    <td style="color:var(--text-muted);font-size:12px;">${new Date(t.created_at).toLocaleDateString('pt-BR')}</td>
+                </tr>`;
+        }).join('');
 
         wrap.innerHTML = `<table><thead><tr><th>Protocolo</th><th>Assunto</th><th>Status</th><th>Prio</th><th>Data</th></tr></thead><tbody>${rows}</tbody></table>`;
+
     } catch (err) {
         console.error("Erro ao carregar tickets:", err);
         wrap.innerHTML = `<div class="tickets-empty">Erro ao carregar lista de chamados.</div>`;
     }
 }
 
-// Chame a função ao carregar a página
-document.addEventListener('DOMContentLoaded', carregarTickets);
+// verifica status de user logado
+async function verificarStatusUsuario() {
+    try {
+    
+        const res = await fetch('adm/verificar_adm.php');
+        const status = await res.json();
 
-// Inicializa a lista
-carregarTickets();
+        if (!status.logado) {
+            console.log("Acesso administrativo não detectado.");
+        } else {
+            console.log("Admin logado com sucesso.");
+        }
+    } catch (err) {
+        console.error("Erro na comunicação de sessão:", err);
+    }
+}
+
+// Inicialização correta
+document.addEventListener('DOMContentLoaded', () => {
+    carregarTickets();
+});

@@ -5,7 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── Load profile name + avatar ──
+  // ── Perfil e Avatar ──
   const profile = JSON.parse(localStorage.getItem('fs_profile') || '{}');
   if (profile.name) {
     const nameEl = document.getElementById('welcome-name');
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (navAv) navAv.src = profile.avatar;
   }
 
-  // ── Fullscreen Timer ──
+  // ── Elementos do Fullscreen Timer ──
   const fsEl       = document.getElementById('fullscreen-timer');
   const openBtn    = document.getElementById('fullscreen-btn');
   const closeBtn   = document.getElementById('fs-exit-btn');
@@ -27,59 +27,52 @@ document.addEventListener('DOMContentLoaded', () => {
   const fsResetBtn = document.getElementById('fs-reset');
   const fsDotsEl   = document.getElementById('fs-dots');
   const fsModes    = document.querySelectorAll('.fs-mode-btn');
+  const minEl      = document.getElementById('minutes');
+  const secEl      = document.getElementById('seconds');
+  const statusEl   = document.querySelector('.js-timer-status');
+  const mainPlayBtn = document.querySelector('.js-play');
 
-  // Shared state with main timer — we read from same elements
+  // ── Sincronização do Timer ──
   function syncFromMain() {
     if (!fsMinEl || !fsSecEl) return;
-    const m = document.getElementById('minutes')?.innerText || '25';
-    const s = document.getElementById('seconds')?.innerText || '00';
-    const st = document.querySelector('.js-timer-status')?.innerText || '';
-    fsMinEl.textContent = m;
-    fsSecEl.textContent = s;
-    if (fsStatus) fsStatus.textContent = st;
+    fsMinEl.textContent = minEl?.innerText || '25';
+    fsSecEl.textContent = secEl?.innerText || '00';
+    if (fsStatus) fsStatus.textContent = statusEl?.innerText || '';
   }
 
-  // Observe main timer changes
-  const minEl = document.getElementById('minutes');
-  const secEl = document.getElementById('seconds');
   if (minEl && secEl) {
     const obs = new MutationObserver(syncFromMain);
     obs.observe(minEl, { childList: true, characterData: true, subtree: true });
     obs.observe(secEl, { childList: true, characterData: true, subtree: true });
   }
 
-  // Also observe status
-  const statusEl = document.querySelector('.js-timer-status');
   if (statusEl) {
     new MutationObserver(() => {
       if (fsStatus) fsStatus.textContent = statusEl.textContent;
     }).observe(statusEl, { childList: true, characterData: true, subtree: true });
   }
 
-  // Sync dots
   function syncDots() {
     if (!fsDotsEl) return;
     const mainDots = document.getElementById('pomo-dots');
-    if (mainDots) fsDotsEl.innerHTML = mainDots.innerHTML;
-    // give dots the right class for fs sizing
-    fsDotsEl.querySelectorAll('.pomo-dot').forEach(d => d.classList.add('pomo-dot'));
+    if (mainDots) {
+      fsDotsEl.innerHTML = mainDots.innerHTML;
+      fsDotsEl.querySelectorAll('.pomo-dot').forEach(d => d.classList.add('pomo-dot'));
+    }
   }
 
+  // ── Controles Fullscreen ──
   openBtn?.addEventListener('click', () => {
     fsEl.classList.add('active');
     syncFromMain();
     syncDots();
   });
 
-  closeBtn?.addEventListener('click', () => {
-    fsEl.classList.remove('active');
-  });
+  closeBtn?.addEventListener('click', () => fsEl.classList.remove('active'));
 
-  // Fullscreen mode buttons delegate to main timer buttons
   fsModes?.forEach(btn => {
     btn.addEventListener('click', () => {
       const mins = btn.dataset.minutes;
-      // Click corresponding main mode button
       const mainBtn = document.querySelector(`.mode-btn[data-minutes="${mins}"]`);
       if (mainBtn) mainBtn.click();
       fsModes.forEach(b => b.classList.remove('active'));
@@ -88,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Sync main mode active to fs modes
   document.querySelectorAll('.mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const mins = btn.dataset.minutes;
@@ -96,14 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // FS play/reset → delegate to main buttons
   fsPlayBtn?.addEventListener('click', () => {
     document.querySelector('.js-play')?.click();
     syncFromMain();
-    // Toggle play button label
-    const mainPlay = document.querySelector('.js-play');
-    if (fsPlayBtn && mainPlay) {
-      const txt = mainPlay.textContent.trim();
+    if (fsPlayBtn && mainPlayBtn) {
+      const txt = mainPlayBtn.textContent.trim();
       fsPlayBtn.textContent = txt.includes('Pausar') ? '⏸ Pausar' : txt.includes('Retomar') ? '▶ Retomar' : '▶ Iniciar';
     }
   });
@@ -114,8 +103,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fsPlayBtn) fsPlayBtn.textContent = '▶ Iniciar';
   });
 
-  // Keep fs play label in sync
-  const mainPlayBtn = document.querySelector('.js-play');
   if (mainPlayBtn) {
     new MutationObserver(() => {
       if (!fsPlayBtn) return;
@@ -129,6 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── Shuffle Music ──
   let shuffleOn = false;
   const shuffleBtn = document.getElementById('player-shuffle');
+  const nextBtn = document.getElementById('player-next');
   const tracks = Array.from(document.querySelectorAll('.track-item'));
 
   shuffleBtn?.addEventListener('click', () => {
@@ -140,13 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
     shuffleBtn.title = shuffleOn ? 'Aleatório: ON' : 'Aleatório: OFF';
   });
 
-  // Hook into next button to use shuffle
-  const nextBtn = document.getElementById('player-next');
   if (nextBtn && tracks.length) {
-    const origClick = nextBtn.onclick;
     nextBtn.addEventListener('click', () => {
-      if (!shuffleOn) return; // let original handler run
-      // Find active track
+      if (!shuffleOn) return;
       const activeIdx = tracks.findIndex(t => t.classList.contains('active'));
       let next;
       do { next = Math.floor(Math.random() * tracks.length); } while (next === activeIdx && tracks.length > 1);
@@ -154,25 +138,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }, true);
   }
 
-  // ── Track study hours via pomodoro ──
-  // Each time a pomo focus session ends, log ~25min of study
+  // ── Estudo e Estatísticas ──
   const settings = JSON.parse(localStorage.getItem('fs_settings') || '{}');
   const focusDur = settings.focusDuration || 25;
-
-  // We detect new pomo completions by watching pomo count
   let lastPomoCount = parseInt(localStorage.getItem('fs_pomo_count') || '0');
 
   setInterval(() => {
     const cur = parseInt(localStorage.getItem('fs_pomo_count') || '0');
     if (cur !== lastPomoCount) {
-      // A pomo finished — log study time
       const today = new Date();
       const key = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
       const data = JSON.parse(localStorage.getItem('fs_study_hours') || '{}');
+      
       data[key] = (data[key] || 0) + focusDur;
       localStorage.setItem('fs_study_hours', JSON.stringify(data));
 
-      // Increment total sessions
       const total = parseInt(localStorage.getItem('fs_pomo_total') || '0') + 1;
       localStorage.setItem('fs_pomo_total', total);
 
