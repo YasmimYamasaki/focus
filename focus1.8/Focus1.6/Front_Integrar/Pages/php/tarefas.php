@@ -2,6 +2,7 @@
 session_start();
 require_once 'MySQLClass.php';
 $db = new MySQLClass();
+//corrigir com novas querys do banco, e usar a view nova para visualizar inserção
 
 header('Content-Type: application/json; charset=utf-8');
 

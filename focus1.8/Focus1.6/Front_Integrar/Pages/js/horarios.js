@@ -7,9 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const DAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
   const CAT_LABELS = {
-    study: '📚 Estudo', exercise: '🏋️ Exercício',
-    meal: '🍽️ Refeição', work: '💼 Trabalho',
-    personal: '🌟 Pessoal', rest: '😴 Descanso', other: '📌 Outro'
+    study: '📚 Estudo',
+    exercise: '🏋️ Exercício',
+    meal: '🍽️ Refeição',
+    work: '💼 Trabalho',
+    personal: '🌟 Pessoal',
+    rest: '😴 Descanso',
+    other: '📌 Outro'
   };
 
   // ── Estado ──
@@ -126,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         actsEl.innerHTML = '<p style="font-size:11px;color:var(--text-muted);text-align:center;padding:16px 4px">Sem atividades</p>';
       }
       acts.forEach(act => {
+        console.log("Renderizando tarefa:", act.title, "Tag:", act.tag);
         const item = document.createElement('div');
         item.className = `activity-item${act.done ? ' done' : ''}`;
         item.dataset.id = act.scheduling_id;
@@ -135,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         item.innerHTML = `
     <div class="act-time">${act.start} – ${act.end}</div>
     <div class="act-title">${act.title}</div>
-    <div class="act-cat-badge">${CAT_LABELS[act.tag] || '📌 Outro'}</div> 
+    <div class="act-cat-badge">${CAT_LABELS[act.tag] || '📌' + (act.tag || 'Outro')}</div> 
     <div class="act-actions">
         <button class="act-btn check" title="Concluir">✓</button>
         <button class="act-btn del" title="Remover">✕</button>
@@ -146,23 +151,48 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ação de CONCLUIR
         item.querySelector('.act-btn.check').addEventListener('click', async (e) => {
           e.stopPropagation();
-          await fetch('php/api_horarios.php', {
-            method: 'POST',
-            body: JSON.stringify({ action: 'toggle_done', id: act.scheduling_id })
-          });
-          carregarAtividadesDoBanco();
+          try {
+            const response = await fetch('php/api_horarios.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'toggle_done', id: act.scheduling_id })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              // Recarrega os dados e a interface
+              await carregarAtividadesDoBanco();
+            } else {
+              alert("Erro ao atualizar status: " + (result.error || 'Erro desconhecido'));
+            }
+          } catch (err) {
+            console.error("Erro na requisição:", err);
+          }
         });
 
         // Ação de DELETAR
         item.querySelector('.act-btn.del').addEventListener('click', async (e) => {
           e.stopPropagation();
           if (!confirm("Deseja excluir esta atividade?")) return;
-          await fetch('php/api_horarios.php', {
-            method: 'POST',
-            body: JSON.stringify({ action: 'delete', id: act.scheduling_id })
-          });
-          carregarAtividadesDoBanco();
+
+          try {
+            const response = await fetch('php/api_horarios.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }, // ADICIONADO: Necessário para o PHP ler o JSON
+              body: JSON.stringify({ action: 'delete', id: act.scheduling_id })
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              await carregarAtividadesDoBanco();
+            } else {
+              alert("Erro ao deletar: " + (result.error || 'Erro desconhecido'));
+            }
+          } catch (err) {
+            console.error("Erro na requisição de delete:", err);
+          }
         });
+        actsEl.appendChild(item);
       });
     });
 
@@ -211,11 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!title) { document.getElementById('act-title').focus(); return; }
 
     const dados = {
+      action: 'create',
       title: title,
       day: document.getElementById('act-day').value,
       start: document.getElementById('act-start').value,
       end: document.getElementById('act-end').value,
-      cat: document.getElementById('act-category').value,
+      tag: document.getElementById('act-category').value,
       notes: document.getElementById('act-notes').value.trim(),
       date: getWeekDates(weekOffset)[document.getElementById('act-day').value].toISOString().split('T')[0]
     };

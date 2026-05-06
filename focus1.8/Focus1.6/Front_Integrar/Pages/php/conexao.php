@@ -4,10 +4,12 @@ function getConexao() { //corrigido
     $user = "tcc_bd7";
     $pass = "ROSA123456a#";
     $db   = "tcc_bd7"; */
+
+    //banco local (cred acima ser referente ao servidor)
     $host = "localhost"; // Use o IP direto para ser mais rápido
     $user = "root";
     $pass = "";
-    $db   = "focus";
+    $db   = "focuslocal"; //substituir com o nome local atual
 
     $conn = mysqli_init();
     

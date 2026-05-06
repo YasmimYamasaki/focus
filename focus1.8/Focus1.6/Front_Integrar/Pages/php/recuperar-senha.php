@@ -71,7 +71,7 @@ try {
     $mail->addAddress($email, $nomeExibicao);
     $mail->isHTML(true);
     $mail->Subject = "Recuperacao de Senha - Focus Study";
-    //No futuro alterar esse link
+    //quando mudar para server Web, alterar esse link
     $link = "http://localhost/focus1.8/Focus1.6/Front_Integrar/Pages/nova-senha.html?token=" . $token;
 
     // BOTÃO NO E-MAIL

@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => { //Corrigido
+document.addEventListener('DOMContentLoaded', () => { //a corrigir junto com o php de tarefas
     // ============================================================
-    // 1. GERENCIAMENTO DE ESTADO E SESSÃO (BANCO DE DADOS)
+    // 1. GERENCIAMENTO DE ESTADO E SESSÃO 
     // ============================================================
     async function carregarDadosIniciais() {
         try {
