@@ -1,7 +1,6 @@
 <?php
-//corrigido
-header('Content-Type: application/json');
-require_once __DIR__ . '/MySQLClass.php';
+header('Content-Type: application/json; charset=utf-8');
+require_once __DIR__ . '/MySQLClass.php'; //corrigido
 session_start();
 
 $mysql = new MySQLClass();
@@ -10,154 +9,181 @@ $db = $mysql->getConnection();
 $profile_id = $_SESSION['profile_id'] ?? null;
 
 if (!$profile_id) {
-    echo json_encode(['error' => 'Sessão expirada']);
+    echo json_encode(['success' => false, 'error' => 'Sessão expirada']);
     exit;
 }
-
-$method = $_SERVER['REQUEST_METHOD'];
 $input = json_decode(file_get_contents('php://input'), true);
-$action = $_GET['action'] ?? $input['action'] ?? null;
+$method = $_SERVER['REQUEST_METHOD'];
+$action = $_GET['action'] ?? $input['action'] ?? $_POST['acao'] ?? null;
 
-// --- 1. LISTAR ATIVIDADES ---
-if ($method === 'GET' && $action === 'list') {
-    $inicio = $_GET['inicio'] . ' 00:00:00';
-    $fim = $_GET['fim'] . ' 23:59:59';
+try {
+    // --- LISTAR  ---
+    if ($method === 'GET' && $action === 'list') {
+        $inicio = $_GET['inicio'] . ' 00:00:00';
+        $fim = $_GET['fim'] . ' 23:59:59';
 
-    $sql = "SELECT 
-        v.*, 
-        sch.scheduling_id, 
-        t.tag,          
-        t.notes       
-        FROM schedulings_view v
-        INNER JOIN tasks t ON t.title = v.Task AND t.profile_id = v.Profile_id
-        INNER JOIN schedules s ON s.start_time = v.Scheduled_for AND s.profile_id = v.Profile_id
-        INNER JOIN schedulings sch ON sch.schedule_id = s.schedule_id AND sch.task_id = t.task_id
-        WHERE v.Profile_id = ? 
-        AND v.Scheduled_for BETWEEN ? AND ?
-        ORDER BY v.Scheduled_for ASC";
+        $sql = "SELECT 
+            sch.scheduling_id, 
+            sch.done as Done, 
+            t.title as Task, 
+            t.tag, 
+            t.note, 
+            t.priority as Priority,
+            s.start_time as Scheduled_for, 
+            s.end_time as Repeats_until
+        FROM schedulings sch
+        INNER JOIN tasks t ON sch.task_id = t.task_id
+        INNER JOIN schedules s ON sch.schedule_id = s.schedule_id
+        WHERE t.profile_id = ? 
+          AND s.frequency != 'missao'
+          AND s.start_time BETWEEN ? AND ?
+        ORDER BY s.start_time ASC";
 
-    $result = $mysql->searchSafe($sql, [$profile_id, $inicio, $fim]);
+        $result = $mysql->searchSafe($sql, [$profile_id, $inicio, $fim]);
 
-    $output = [];
-    foreach ($result as $row) {
-        $output[date('Y-m-d', strtotime($row['Scheduled_for']))][] = [
-            'scheduling_id' => $row['scheduling_id'],
-            'done'          => (bool)$row['Done'],
-            'title'         => $row['Task'],
-            'tag'           => $row['tag'],
-            'start'         => date('H:i', strtotime($row['Scheduled_for'])),
-            'end'           => $row['Repeats_until'] ? date('H:i', strtotime($row['Repeats_until'])) : '',
-            'priority'      => $row['Priority']
-        ];
+        $output = [];
+        foreach ($result as $row) {
+            $dataChave = date('Y-m-d', strtotime($row['Scheduled_for']));
+            $output[$dataChave][] = [
+                'scheduling_id' => $row['scheduling_id'],
+                'done'          => (bool)$row['Done'],
+                'title'         => $row['Task'],
+                'tag'           => $row['tag'],
+                'note'         => $row['note'],
+                'start'         => date('H:i', strtotime($row['Scheduled_for'])),
+                'end'           => $row['Repeats_until'] ? date('H:i', strtotime($row['Repeats_until'])) : '',
+                'priority'      => $row['Priority']
+            ];
+        }
+        echo json_encode($output);
+        exit;
     }
-    echo json_encode($output);
-    exit;
-}
 
-// --- CRIAR ATIVIDADE ---
-if ($method === 'POST' && $action === 'create') {
-    try {
+    // --- CRIAR ---
+    if ($method === 'POST' && ($action === 'create' || $action === 'inserir')) {
         $db->begin_transaction();
 
-        $sqlTask = "INSERT INTO tasks (profile_id, title, tag, notes, priority, created_at, updated_at) VALUES (?, ?, ?, ?, 'low', NOW(), NOW())";
-        $mysql->execSafe(
-            $sqlTask,
-            [
-                $profile_id,
-                $input['title'],
-                $input['tag'],
-                $input['notes']
-            ]
-        );
+        $titulo = $input['title'] ?? $_POST['titulo'] ?? '';
+        $tag    = $input['tag'] ?? $_POST['tag'] ?? 'Outro';
+        $notes  = $input['note'] ?? $_POST['note'] ?? '';
+        $data   = $input['date'] ?? $_POST['date'] ?? date('Y-m-d');
+        $inicio = $input['start'] ?? $_POST['start'] ?? '08:00';
+        $fim    = $input['end'] ?? $_POST['end'] ?? null;
+
+        if (empty($titulo)) throw new Exception("O título é obrigatório.");
+
+        $sqlTask = "INSERT INTO tasks (profile_id, title, tag, note, priority, created_at) VALUES (?, ?, ?, ?, 'low', NOW())";
+        $mysql->execSafe($sqlTask, [$profile_id, $titulo, $tag, $notes]);
         $task_id = $mysql->lastInsertId();
 
-        $full_start = $input['date'] . ' ' . $input['start'] . ':00';
-        $full_end = !empty($input['end']) ? ($input['date'] . ' ' . $input['end'] . ':00') : null;
+        $full_start = $data . ' ' . $inicio . ':00';
+        $full_end   = !empty($fim) ? ($data . ' ' . $fim . ':00') : null;
 
         $sqlSched = "INSERT INTO schedules (profile_id, start_time, end_time, frequency) VALUES (?, ?, ?, 'once')";
-        $mysql->execSafe(
-            $sqlSched,
-            [$profile_id, $full_start, $full_end]
-        );
+        $mysql->execSafe($sqlSched, [$profile_id, $full_start, $full_end]);
         $schedule_id = $mysql->lastInsertId();
 
-        $sqlLink = "INSERT INTO schedulings (schedule_id, task_id, done) VALUES (?, ?, 0)";
-        $mysql->execSafe(
-            $sqlLink,
-            [$schedule_id, $task_id]
-        );
+        $mysql->execSafe("INSERT INTO schedulings (schedule_id, task_id, done) VALUES (?, ?, 0)", [$schedule_id, $task_id]);
 
         $db->commit();
         echo json_encode(['success' => true]);
-    } catch (Exception $e) {
-        $db->rollback();
-        echo json_encode(['error' => $e->getMessage()]);
+        exit;
     }
-    exit;
-}
 
-// --- ALTERAR STATUS (TOGGLE DONE) ---
-if ($method === 'POST' && $action === 'toggle_done') {
-    $sql = "SELECT done FROM schedulings WHERE scheduling_id = ?";
-    $res = $mysql->searchSafe($sql, [$input['id']]);
+    // --- DELETAR (UNITÁRIO) ---
+    if ($method === 'POST' && $action === 'delete') {
+        try {
+            $db->begin_transaction();
 
-    if ($res) {
-        $newStatus = $res[0]['done'] ? 0 : 1;
-        $sqlUp = "UPDATE schedulings SET done = NOT done WHERE scheduling_id = ?";
-        $mysql->execSafe($sqlUp, [$input['id']]);
-        echo json_encode(['success' => true]);
-    }
-    exit;
-}
+            $sqlInfo = "SELECT schedule_id, task_id FROM schedulings WHERE scheduling_id = ?";
+            $res = $mysql->searchSafe($sqlInfo, [$input['id']]);
 
-// --- DELETAR ATIVIDADE ---
-if ($method === 'POST' && $action === 'delete') {
-    try {
-        $db->begin_transaction();
+            if ($res) {
+                $sid = $res[0]['schedule_id'];
+                $tid = $res[0]['task_id'];
 
-        $sqlInfo = "SELECT schedule_id, task_id FROM schedulings WHERE scheduling_id = ?";
-        $res = $mysql->searchSafe($sqlInfo, [$input['id']]);
+                $mysql->execSafe("DELETE FROM schedulings WHERE scheduling_id = ?", [$input['id']]);
 
-        if ($res) {
-            $sid = $res[0]['schedule_id'];
-            $tid = $res[0]['task_id'];
 
-            $mysql->execSafe("DELETE FROM schedules WHERE schedule_id = ?", [$sid]);
-            $mysql->execSafe("DELETE FROM tasks WHERE task_id = ?", [$tid]);
+                $mysql->execSafe("DELETE FROM schedules WHERE schedule_id = ?", [$sid]);
+
+                $checkUsage = $mysql->searchSafe("SELECT COUNT(*) as total FROM schedulings WHERE task_id = ?", [$tid]);
+                if ($checkUsage[0]['total'] == 0) {
+                    $mysql->execSafe("DELETE FROM tasks WHERE task_id = ?", [$tid]);
+                }
+            }
+
+            $db->commit();
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            if ($db) $db->rollback();
+            echo json_encode(['error' => $e->getMessage()]);
         }
-
-        $db->commit();
-        echo json_encode(['success' => true]);
-    } catch (Exception $e) {
-        $db->rollback();
-        echo json_encode(['error' => $e->getMessage()]);
+        exit;
     }
-    exit;
+
+    // ---  TOGGLE (Status) ---
+    if ($method === 'POST' && ($action === 'toggle_done' || $action === 'toggle')) {
+        $id = $input['id'] ?? $_POST['task_id'];
+        $mysql->execSafe("UPDATE schedulings SET done = NOT done WHERE scheduling_id = ?", [$id]);
+        echo json_encode(['success' => true]);
+        exit;
+    }
+} catch (Exception $e) {
+    if (isset($db)) $db->rollback();
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
 
-// --- LIMPAR SEMANA ---
-if ($method === 'POST' && $action === 'clear_week') {
+/* codigo com modal novo a ser implementado
+
+
+
+if ($method === 'POST' && $action === 'create') {
+
     try {
+
         $db->begin_transaction();
-        $sqlTasks = "DELETE t FROM tasks t
-                     INNER JOIN schedulings sch ON t.task_id = sch.task_id
-                     INNER JOIN schedules s ON sch.schedule_id = s.schedule_id
-                     WHERE s.profile_id = ? 
-                     AND DATE(s.start_time) BETWEEN ? AND ?";
 
-        $mysql->execSafe($sqlTasks, [$profile_id, $input['inicio'], $input['fim']]);
+        $sqlTask = "INSERT INTO tasks (profile_id, title, tag, notes, priority, created_at) VALUES (?, ?, ?, ?, 'low', NOW())";
 
-        $sqlSchedules = "DELETE FROM schedules 
-                         WHERE profile_id = ? 
-                         AND DATE(start_time) BETWEEN ? AND ?";
+        $mysql->execSafe($sqlTask, [$profile_id, $input['title'], $input['tag'], $input['notes']]);
 
-        $mysql->execSafe($sqlSchedules, [$profile_id, $input['inicio'], $input['fim']]);
+        $task_id = $mysql->lastInsertId();
+
+
+
+        $full_start = $input['date'] . ' ' . $input['start'] . ':00';
+
+        $full_end = !empty($input['end']) ? ($input['date'] . ' ' . $input['end'] . ':00') : null;
+
+
+
+        $sqlSched = "INSERT INTO schedules (profile_id, start_time, end_time, frequency) VALUES (?, ?, ?, ?)";
+
+        $mysql->execSafe($sqlSched, [$profile_id, $full_start, $full_end, $input['frequency'] ?? 'once']);
+
+        $schedule_id = $mysql->lastInsertId();
+
+
+
+        $mysql->execSafe("INSERT INTO schedulings (schedule_id, task_id, done) VALUES (?, ?, 0)", [$schedule_id, $task_id]);
 
         $db->commit();
+
         echo json_encode(['success' => true]);
+
     } catch (Exception $e) {
+
         $db->rollback();
+
         echo json_encode(['error' => $e->getMessage()]);
+
     }
+
     exit;
+
 }
+
+
+
+*/

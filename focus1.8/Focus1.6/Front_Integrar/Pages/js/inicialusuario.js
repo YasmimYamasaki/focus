@@ -563,15 +563,27 @@ document.addEventListener('DOMContentLoaded', () => { //a corrigir junto com o p
     document.getElementById('current-date').innerText = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
     function atualizarProgresso(tarefas) {
-        const total = tarefas.length;
-        const done = tarefas.filter(t => t.done == 1).length;
+        const listaTarefas = tarefas || [];
+
+        const total = listaTarefas.length;
+        const done = listaTarefas.filter(t => t.done == 1).length;
         const pct = total > 0 ? (done / total) * 100 : 0;
-        document.getElementById('tasks-done-count').textContent = `${done} de ${total} concluídas`;
-        document.getElementById('tasks-progress-fill').style.width = `${pct}%`;
+
+        const countEl = document.getElementById('tasks-done-count');
+        const fillEl = document.getElementById('tasks-progress-fill');
+
+        if (countEl) {
+            countEl.textContent = `${done} de ${total} concluídas`;
+        }
+
+        if (fillEl) {
+            fillEl.style.width = `${pct}%`;
+        }
     }
 
     carregarDadosIniciais();
     renderHistory();
     renderDots();
     updateTimerDisplay();
+    atualizarProgresso();
 });

@@ -12,7 +12,7 @@ header('Content-Type: application/json; charset=utf-8');
 // Verifica se a sessão existe
 if (isset($_SESSION['profile_id'])) {
     $profileId = $_SESSION['profile_id'];
-
+ 
     try {
         $perfil = $db->searchSafe("SELECT username, streak, xp FROM profiles WHERE profile_id = ? LIMIT 1", [$profileId]);
         

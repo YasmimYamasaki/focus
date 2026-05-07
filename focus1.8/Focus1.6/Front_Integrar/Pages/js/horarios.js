@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     exercise: '🏋️ Exercício',
     meal: '🍽️ Refeição',
     work: '💼 Trabalho',
-    personal: '🌟 Pessoal',
+    personal: '🌟 Pessoal', 
     rest: '😴 Descanso',
     other: '📌 Outro'
   };
@@ -146,6 +146,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="act-btn del" title="Remover">✕</button>
     </div>
 `;
+
+
+
         actsEl.appendChild(item);
 
         // Ação de CONCLUIR
@@ -322,3 +325,68 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   carregarAtividadesDoBanco();
 });
+
+/*
+codigo novo com novo modal
+let tempTaskData = {}; 
+
+
+
+// Passo 1: Dados da Missão
+
+document.getElementById('btn-next-step').addEventListener('click', () => {
+
+    tempTaskData = {
+
+        title: document.getElementById('act-title').value,
+
+        tag: document.getElementById('act-category').value,
+
+        notes: document.getElementById('act-notes').value
+
+    };
+
+    document.getElementById('modal-step-1').classList.remove('open');
+
+    document.getElementById('modal-step-2').classList.add('open');
+
+});
+
+
+
+// Passo 2: Finalizar Agendamento
+
+document.getElementById('modal-act-confirm').addEventListener('click', async () => {
+
+    const dados = {
+
+        action: 'create',
+
+        ...tempTaskData,
+
+        date: getWeekDates(weekOffset)[selectedDay].toISOString().split('T')[0],
+
+        start: document.getElementById('act-start').value,
+
+        end: document.getElementById('act-end').value,
+
+        frequency: document.getElementById('act-frequency').value
+
+    };
+
+
+
+    const response = await fetch('php/api_horarios.php', {
+
+        method: 'POST',
+
+        body: JSON.stringify(dados)
+
+    });
+
+    if ((await response.json()).success) carregarAtividadesDoBanco();
+
+    document.getElementById('modal-step-2').classList.remove('open');
+
+});
+*/ 
