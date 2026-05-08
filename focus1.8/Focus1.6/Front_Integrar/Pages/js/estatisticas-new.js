@@ -1,6 +1,6 @@
 // ══════════════════════════════════════
 //  ESTATÍSTICAS — Focus Study
-//  estatisticas-new.js  (corrigido)
+//  estatisticas-new.js  (corrigido) //criar tela nova
 // ══════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {

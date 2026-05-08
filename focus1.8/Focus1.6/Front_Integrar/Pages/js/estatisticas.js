@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════
 //  ESTATÍSTICAS — Focus Study
-//  Persistência por mês + modal de exclusão customizado
+//  Persistência por mês + modal de exclusão customizado //criar tela nova
 // ══════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {

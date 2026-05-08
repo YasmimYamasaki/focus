@@ -54,7 +54,7 @@ try {
         if (!empty($usuario->adm_id)) {
             $_SESSION['role'] = 'admin';
             $_SESSION['adm_id'] = $usuario->adm_id;
-            $redirect = "../adm/dashboard.php";
+            $redirect = "adm/painelAdm.php";
         } else {
             $_SESSION['role'] = 'user';
             $redirect = "inicialusuario.html";

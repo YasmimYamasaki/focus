@@ -9,7 +9,7 @@ function getConexao() { //corrigido
     $host = "localhost"; // Use o IP direto para ser mais rápido
     $user = "root";
     $pass = "";
-    $db   = "focuslocal"; //substituir com o nome local atual
+    $db   = "focuslocal1"; //substituir com o nome local atual
 
     $conn = mysqli_init();
     

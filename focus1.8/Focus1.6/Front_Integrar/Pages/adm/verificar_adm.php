@@ -1,5 +1,11 @@
 <?php
-require_once __DIR__ . "/../funcoes/autenticador.php";
+session_start();
+header('Content-Type: application/json; charset=utf-8');
 
-// Executa a verificação
-proteger('admin');
+// Verifica apenas se a role de admin está ativa na sessão
+$isAdmin = (isset($_SESSION['role']) && $_SESSION['role'] === 'admin');
+
+echo json_encode([
+    'logado' => $isAdmin
+]);
+exit;

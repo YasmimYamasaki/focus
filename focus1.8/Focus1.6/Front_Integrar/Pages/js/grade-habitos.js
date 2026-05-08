@@ -1,6 +1,6 @@
 // ══════════════════════════════════════
 //  GRADE DE HÁBITOS — Focus Study
-//  grade-habitos.js
+//  grade-habitos.js //corrigir a tela
 // ══════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {

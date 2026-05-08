@@ -8,7 +8,7 @@ $metodo = $_SERVER['REQUEST_METHOD'];
 $acao = $_GET['acao'] ?? '';
 
 try {
-    // LOGIN ADMINISTRATIVO (CORRIGIR MODAL: erro no servidor e erro de senha)
+    // LOGIN ADMINISTRATIVO
     if ($metodo === 'POST' && $acao === 'login') {
         $email = trim($_POST['email'] ?? '');
         $senha = $_POST['senha'] ?? '';
@@ -23,7 +23,7 @@ try {
 
         if (!$usuario) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Utilizador não encontrado ou não é Admin.']);
-        } else if (!password_verify($senha, $usuario['senha'])) {
+        } else if (!password_verify($senha, $usuario['password'])) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Senha incorreta.']);
         } else {
             $_SESSION['user_id'] = $usuario['user_id'];
@@ -31,6 +31,8 @@ try {
             echo json_encode(['sucesso' => true]);
         }
         exit;
+        error_log("Senha digitada: " . $senha);
+        error_log("Hash no banco: " . $usuario['password']);
     }
 
 

@@ -21,7 +21,6 @@ try {
 
     $db = new MySQLClass();
 
-    $db = new MySQLClass();
 
     $resultados = $db->searchSafe(
         "SELECT u.user_id, p.username 
@@ -61,10 +60,19 @@ try {
     $mail->SMTPAuth = true;
     $mail->Username = USER;
     $mail->Password = PWD;
+    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+    /*
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
     $mail->Port = 465;
+    */
+    $mail->Port = 587;
     $mail->CharSet = 'UTF-8';
-    $mail->SMTPOptions = ['ssl' => ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true]];
+    $mail->SMTPOptions = [
+        'ssl' => [
+        'verify_peer' => false, 
+        'verify_peer_name' => false, 
+        'allow_self_signed' => true
+        ]];
     //quando lançar no web, derrubar esse SMTOptions, ele vai mandar o email no spam
     $mail->setFrom(USER, 'Focus Study');
     $nomeExibicao = htmlspecialchars($usuario['username'] ?? "Usuario");
