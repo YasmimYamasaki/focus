@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Estatísticas - Focus Study</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/grade-habitos.css" />
   <link rel="stylesheet" href="css/estatisticas-new.css" />
   <link rel="icon" type="image/png" href="images/poppy.png">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
@@ -83,30 +84,11 @@
     </div>
 
     <!-- Panorama anual -->
-    <div class="dash-card annual-card">
-      <div class="card-header">
-        <h3>Panorama Anual</h3>
-        <div class="annual-legend">
-          <span class="legend-box" style="background:rgba(255,255,255,0.06)"></span><span class="legend-txt">0</span>
-          <span class="legend-box" style="background:rgba(6,182,212,0.25)"></span>
-          <span class="legend-box" style="background:rgba(6,182,212,0.5)"></span>
-          <span class="legend-box" style="background:rgba(6,182,212,0.75)"></span>
-          <span class="legend-box" style="background:#06b6d4"></span><span class="legend-txt">+</span>
-        </div>
-      </div>
-      <div class="annual-grid-wrap" id="annual-grid-wrap">
         <!-- JS preenche -->
       </div>
     </div>
 
     <!-- Conquistas -->
-    <div class="dash-card achievements-card">
-      <div class="card-header">
-        <h3>Conquistas <span class="badge-count" id="ach-count">0/0</span></h3>
-        <button class="btn btn-outline" id="btn-add-custom-ach">
-          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Adicionar Personalizada
-        </button>
       </div>
       <div class="achievements-grid" id="achievements-grid">
         <!-- JS preenche -->
@@ -122,18 +104,8 @@
         <h3>Nova Conquista</h3>
         <p class="fs-modal-sub">Crie uma conquista pessoal para celebrar seu progresso</p>
       </div>
-      <div class="form-group full" style="margin-bottom:14px">
-        <label>Título</label>
-        <input type="text" id="ach-title" placeholder="Ex: 30 dias sem falhar" maxlength="50" />
-      </div>
-      <div class="form-group full" style="margin-bottom:14px">
-        <label>Descrição</label>
-        <input type="text" id="ach-desc" placeholder="Ex: Mantive minha rotina por 30 dias seguidos" maxlength="80" />
-      </div>
-      <div class="form-group full" style="margin-bottom:20px">
-        <label>Emoji / Ícone</label>
-        <input type="text" id="ach-icon" placeholder="Ex: 🏆" maxlength="4" />
-      </div>
+
+
       <div class="fs-modal-actions">
         <button class="fs-btn-cancel" id="ach-cancel">Cancelar</button>
         <button class="fs-btn-confirm" id="ach-confirm">Criar</button>
@@ -141,17 +113,149 @@
     </div>
   </div>
 
-  <!-- Notification toast -->
-  <div class="achievement-toast" id="ach-toast">
-    <div class="ach-toast-icon" id="ach-toast-icon">🏆</div>
-    <div>
-      <p class="ach-toast-title">Conquista Desbloqueada!</p>
-      <p class="ach-toast-name" id="ach-toast-name"></p>
+
+    <main class="container habits-container">
+
+    <!-- Cabeçalho -->
+    <section class="habits-page-header">
+      <div>
+        <h1 class="dash-title">Grade de <span class="gradient-text">Hábitos</span></h1>
+        <p class="dash-date" id="current-date">Carregando...</p>
+      </div>
+      <div class="habits-header-actions">
+        <div class="month-nav">
+          <button class="month-btn" id="prev-month">&#8592;</button>
+          <span class="month-label" id="month-label">--</span>
+          <button class="month-btn" id="next-month">&#8594;</button>
+        </div>
+        <button class="btn btn-primary" id="btn-new-habit">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Novo Hábito
+        </button>
+      </div>
+    </section>
+
+    <!-- Cards de resumo -->
+    <div class="summary-row">
+      <div class="dash-card summary-mini">
+        <div class="sum-icon cyan-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg></div>
+        <div><p class="sum-lbl">Hábitos Ativos</p><p class="sum-val" id="s-active">0</p></div>
+      </div>
+      <div class="dash-card summary-mini">
+        <div class="sum-icon pink-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <div><p class="sum-lbl">Completados no Mês</p><p class="sum-val" id="s-done">0</p></div>
+      </div>
+      <div class="dash-card summary-mini">
+        <div class="sum-icon green-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div><p class="sum-lbl">Taxa de Progresso</p><p class="sum-val" id="s-rate">0%</p></div>
+      </div>
+      <div class="dash-card summary-mini">
+        <div class="sum-icon orange-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg></div>
+        <div><p class="sum-lbl">Melhor Semana</p><p class="sum-val" id="s-best">--</p></div>
+      </div>
+      <div class="dash-card summary-mini">
+        <div class="sum-icon cyan-icon"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div><p class="sum-lbl">Progresso Diário</p><p class="sum-val" id="s-daily">0%</p></div>
+      </div>
+    </div>
+
+    <!-- Grade principal -->
+    <div class="habits-main-layout">
+
+      <!-- Grade do mês -->
+      <div class="dash-card habits-grid-card">
+        <div class="card-header">
+          <h3>Grade do Mês</h3>
+          <span class="badge-cyan" id="today-badge">Hoje: --</span>
+        </div>
+        <div class="habits-grid-wrapper" id="habits-grid-wrapper">
+          <!-- JS preenche -->
+        </div>
+      </div>
+
+      <!-- Análises -->
+      <div class="analyses-side">
+        <div class="dash-card analyses-card">
+          <div class="card-header"><h3>Análises</h3></div>
+          <div class="analyses-header-row">
+            <span>Hábito</span><span>Meta</span><span>Atual</span><span>Progresso</span>
+          </div>
+          <ul class="analyses-list" id="analyses-list"></ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-row">
+      <div class="dash-card chart-card">
+        <div class="card-header">
+          <h3>Progresso Diário</h3>
+          <span class="badge-cyan">Este mês</span>
+        </div>
+        <div class="chart-wrap"><canvas id="daily-chart"></canvas></div>
+      </div>
+      <div class="dash-card chart-card">
+        <div class="card-header">
+          <h3>Progresso Mensal</h3>
+          <span class="badge-cyan">Por semana</span>
+        </div>
+        <div class="chart-wrap"><canvas id="weekly-chart"></canvas></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Modal: Novo Hábito -->
+  <div class="fs-modal-overlay" id="modal-habit">
+    <div class="fs-modal habit-modal-box">
+      <div class="modal-form-header">
+        <h3>Novo Hábito</h3>
+        <p class="fs-modal-sub">Configure seu hábito e os dias que deseja praticá-lo</p>
+      </div>
+      <div class="form-group full" style="margin-bottom:14px">
+        <label>Nome do Hábito</label>
+        <input type="text" id="h-name" placeholder="Ex: Beber 2L de água" maxlength="50" />
+      </div>
+      <div class="form-group full" style="margin-bottom:14px">
+        <label>Meta Mensal (dias)</label>
+        <input type="number" id="h-goal" placeholder="Ex: 20" min="1" max="31" />
+      </div>
+      <div class="form-group full" style="margin-bottom:20px">
+        <label>Dias da Semana</label>
+        <div class="days-picker" id="days-picker">
+          <button class="day-pill active" data-day="1">Seg</button>
+          <button class="day-pill active" data-day="2">Ter</button>
+          <button class="day-pill active" data-day="3">Qua</button>
+          <button class="day-pill active" data-day="4">Qui</button>
+          <button class="day-pill active" data-day="5">Sex</button>
+          <button class="day-pill" data-day="6">Sáb</button>
+          <button class="day-pill" data-day="0">Dom</button>
+        </div>
+      </div>
+      <div class="fs-modal-actions">
+        <button class="fs-btn-cancel" id="habit-cancel">Cancelar</button>
+        <button class="fs-btn-confirm" id="habit-confirm">Criar Hábito</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmar remoção -->
+  <div class="fs-modal-overlay" id="modal-del-habit">
+    <div class="fs-modal">
+      <div class="fs-modal-icon pink"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></div>
+      <h3>Remover Hábito?</h3>
+      <p class="fs-modal-sub">Todo o histórico deste hábito será apagado permanentemente.</p>
+      <div class="fs-modal-actions">
+        <button class="fs-btn-cancel" id="del-cancel">Cancelar</button>
+        <button class="fs-btn-danger" id="del-confirm">Remover</button>
+      </div>
     </div>
   </div>
 
   <script src="js/script.js"></script>
   <script src="js/estatisticas-new.js"></script>
   <script src="js/avatar.js"></script>
+  <script src="js/grade-habitos.js"></script>
 </body>
 </html>
