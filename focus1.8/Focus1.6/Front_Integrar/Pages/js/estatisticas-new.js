@@ -188,8 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const MONTH_ABBR = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
   function renderAnnual() {
-    const wrap = document.getElementById('annual-grid-wrap');
-    const data = getStudyData();
 
     // Determine if it's a leap year
     const isLeap = (viewYear % 4 === 0 && viewYear % 100 !== 0) || viewYear % 400 === 0;
@@ -285,20 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `<div style="display:flex">${dayLabelsHtml}${gridHtml}</div>`;
   }
 
-  // ── Achievements ──
-  const SYSTEM_ACHIEVEMENTS = [
-    { id:'first_session', icon:'🎯', name:'Primeiro Passo', desc:'Complete sua primeira sessão de foco', check: () => parseInt(localStorage.getItem('fs_pomo_total')||'0') >= 1 },
-    { id:'sessions_10',   icon:'🔥', name:'Em Chamas', desc:'Complete 10 sessões de foco', check: () => parseInt(localStorage.getItem('fs_pomo_total')||'0') >= 10 },
-    { id:'sessions_50',   icon:'💪', name:'Focado', desc:'Complete 50 sessões de foco', check: () => parseInt(localStorage.getItem('fs_pomo_total')||'0') >= 50 },
-    { id:'sessions_100',  icon:'🏆', name:'Centurião do Foco', desc:'Complete 100 sessões de foco', check: () => parseInt(localStorage.getItem('fs_pomo_total')||'0') >= 100 },
-    { id:'streak_7',      icon:'📅', name:'Semana Perfeita', desc:'Estude por 7 dias seguidos', check: () => parseInt(localStorage.getItem('fs_streak')||'0') >= 7 },
-    { id:'streak_30',     icon:'🌟', name:'Mês Épico', desc:'Estude por 30 dias seguidos', check: () => parseInt(localStorage.getItem('fs_streak')||'0') >= 30 },
-    { id:'habit_1',       icon:'🌱', name:'Primeiros Hábitos', desc:'Crie seu primeiro hábito', check: () => JSON.parse(localStorage.getItem('fs_habits')||'[]').length >= 1 },
-    { id:'habit_5',       icon:'🌳', name:'Jardim de Hábitos', desc:'Tenha 5 hábitos ativos', check: () => JSON.parse(localStorage.getItem('fs_habits')||'[]').length >= 5 },
-    { id:'hours_10',      icon:'⏰', name:'Dez Horas', desc:'Acumule 10 horas de estudo', check: () => { const d=getStudyData(); return Object.values(d).reduce((a,b)=>a+b,0)>=600; } },
-    { id:'hours_50',      icon:'📚', name:'Bibliotecário', desc:'Acumule 50 horas de estudo', check: () => { const d=getStudyData(); return Object.values(d).reduce((a,b)=>a+b,0)>=3000; } },
-    { id:'hours_100',     icon:'🎓', name:'Dedicação Total', desc:'Acumule 100 horas de estudo', check: () => { const d=getStudyData(); return Object.values(d).reduce((a,b)=>a+b,0)>=6000; } },
-  ];
+
 
   function getUnlocked() { return JSON.parse(localStorage.getItem('fs_ach_unlocked') || '[]'); }
   function getCustomAch() { return JSON.parse(localStorage.getItem('fs_custom_ach') || '[]'); }
@@ -382,18 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ── Modal: Custom achievement ──
-  document.getElementById('btn-add-custom-ach').addEventListener('click', () => {
-    document.getElementById('ach-title').value = '';
-    document.getElementById('ach-desc').value = '';
-    document.getElementById('ach-icon').value = '';
-    document.getElementById('modal-custom-ach').classList.add('open');
-    setTimeout(() => document.getElementById('ach-title').focus(), 100);
-  });
-  document.getElementById('ach-cancel').addEventListener('click', () => document.getElementById('modal-custom-ach').classList.remove('open'));
-  document.getElementById('modal-custom-ach').addEventListener('click', e => {
-    if (e.target === document.getElementById('modal-custom-ach')) document.getElementById('modal-custom-ach').classList.remove('open');
-  });
 
   document.getElementById('ach-confirm').addEventListener('click', () => {
     const title = document.getElementById('ach-title').value.trim();
