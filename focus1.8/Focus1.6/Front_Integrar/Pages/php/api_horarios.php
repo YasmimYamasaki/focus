@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
-require_once __DIR__ . '/MySQLClass.php'; //corrigido
+require_once __DIR__ . '/MySQLClass.php';
 session_start();
 
 $mysql = new MySQLClass();
@@ -12,12 +12,13 @@ if (!$profile_id) {
     echo json_encode(['success' => false, 'error' => 'Sessão expirada']);
     exit;
 }
+
 $input = json_decode(file_get_contents('php://input'), true);
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? $input['action'] ?? $_POST['acao'] ?? null;
 
 try {
-    // --- LISTAR  ---
+    // --- LISTAR ---
     if ($method === 'GET' && $action === 'list') {
         $inicio = $_GET['inicio'] . ' 00:00:00';
         $fim = $_GET['fim'] . ' 23:59:59';
@@ -49,7 +50,7 @@ try {
                 'done'          => (bool)$row['Done'],
                 'title'         => $row['Task'],
                 'tag'           => $row['tag'],
-                'note'         => $row['note'],
+                'note'          => $row['note'],
                 'start'         => date('H:i', strtotime($row['Scheduled_for'])),
                 'end'           => $row['Repeats_until'] ? date('H:i', strtotime($row['Repeats_until'])) : '',
                 'priority'      => $row['Priority']
@@ -92,48 +93,70 @@ try {
 
     // --- DELETAR (UNITÁRIO) ---
     if ($method === 'POST' && $action === 'delete') {
-        try {
-            $db->begin_transaction();
+        $db->begin_transaction();
+        $sqlInfo = "SELECT schedule_id, task_id FROM schedulings WHERE scheduling_id = ?";
+        $res = $mysql->searchSafe($sqlInfo, [$input['id']]);
 
-            $sqlInfo = "SELECT schedule_id, task_id FROM schedulings WHERE scheduling_id = ?";
-            $res = $mysql->searchSafe($sqlInfo, [$input['id']]);
-
-            if ($res) {
-                $sid = $res[0]['schedule_id'];
-                $tid = $res[0]['task_id'];
-
-                $mysql->execSafe("DELETE FROM schedulings WHERE scheduling_id = ?", [$input['id']]);
-
-
-                $mysql->execSafe("DELETE FROM schedules WHERE schedule_id = ?", [$sid]);
-
-                $checkUsage = $mysql->searchSafe("SELECT COUNT(*) as total FROM schedulings WHERE task_id = ?", [$tid]);
-                if ($checkUsage[0]['total'] == 0) {
-                    $mysql->execSafe("DELETE FROM tasks WHERE task_id = ?", [$tid]);
-                }
+        if ($res) {
+            $sid = $res[0]['schedule_id'];
+            $tid = $res[0]['task_id'];
+            $mysql->execSafe("DELETE FROM schedulings WHERE scheduling_id = ?", [$input['id']]);
+            $mysql->execSafe("DELETE FROM schedules WHERE schedule_id = ?", [$sid]);
+            $checkUsage = $mysql->searchSafe("SELECT COUNT(*) as total FROM schedulings WHERE task_id = ?", [$tid]);
+            if ($checkUsage[0]['total'] == 0) {
+                $mysql->execSafe("DELETE FROM tasks WHERE task_id = ?", [$tid]);
             }
-
-            $db->commit();
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-            if ($db) $db->rollback();
-            echo json_encode(['error' => $e->getMessage()]);
         }
+        $db->commit();
+        echo json_encode(['success' => true]);
         exit;
     }
 
-    // ---  TOGGLE (Status) ---
-    if ($method === 'POST' && ($action === 'toggle_done' || $action === 'toggle')) {
-        $id = $input['id'] ?? $_POST['task_id'];
+    // --- LIMPAR SEMANA TODA ---
+    if ($method === 'POST' && $action === 'clear_week') {
+        $db->begin_transaction();
+
+        $sqlDelete = "DELETE FROM schedulings 
+                      WHERE scheduling_id IN (
+                          SELECT temp.id FROM (
+                              SELECT sch.scheduling_id as id 
+                              FROM schedulings sch
+                              INNER JOIN schedules s ON sch.schedule_id = s.schedule_id
+                              WHERE s.profile_id = ? 
+                                AND s.start_time BETWEEN ? AND ?
+                          ) AS temp
+                      )";
+        
+        $mysql->execSafe($sqlDelete, [
+            $profile_id, 
+            $input['inicio'] . ' 00:00:00', 
+            $input['fim'] . ' 23:59:59'
+        ]);
+
+        $mysql->execSafe("DELETE FROM schedules WHERE profile_id = ? AND schedule_id NOT IN (SELECT schedule_id FROM schedulings)", [$profile_id]);
+        $mysql->execSafe("DELETE FROM tasks WHERE profile_id = ? AND task_id NOT IN (SELECT task_id FROM schedulings)", [$profile_id]);
+
+        $db->commit();
+        echo json_encode(['success' => true]);
+        exit;
+    }
+
+    // --- ALTERAR STATUS (DONE) ---
+    if ($method === 'POST' && $action === 'toggle_done') {
+        $id = $input['id'] ?? null;
         $mysql->execSafe("UPDATE schedulings SET done = NOT done WHERE scheduling_id = ?", [$id]);
         echo json_encode(['success' => true]);
         exit;
     }
+
 } catch (Exception $e) {
-    if (isset($db)) $db->rollback();
+    if (isset($db) && $db->connect_errno == 0) @$db->rollback();
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    exit;
 }
 
+
+//
 /* codigo com modal novo a ser implementado
 
 
@@ -183,7 +206,4 @@ if ($method === 'POST' && $action === 'create') {
     exit;
 
 }
-
-
-
 */
