@@ -96,22 +96,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function collectSettings() {
-        settings.focusDuration = parseInt(document.getElementById('cfg-focus').value) || 25;
-        settings.shortBreak = parseInt(document.getElementById('cfg-short-break').value) || 5;
-        settings.longBreak = parseInt(document.getElementById('cfg-long-break').value) || 15;
-        settings.sessionsLong = parseInt(document.getElementById('cfg-sessions-long').value) || 4;
-        settings.autoBreak = document.getElementById('cfg-auto-break').checked;
-        settings.autoFocus = document.getElementById('cfg-auto-focus').checked;
-        settings.notifBrowser = document.getElementById('cfg-notif-browser').checked;
-        settings.notifSound = document.getElementById('cfg-notif-sound').checked;
-        settings.notifAchievements = document.getElementById('cfg-notif-achievements').checked;
-        settings.reminderTime = document.getElementById('cfg-reminder-time').value;
-        settings.compact = document.getElementById('cfg-compact').checked;
-        settings.animations = document.getElementById('cfg-animations').checked;
-        settings.blur = document.getElementById('cfg-blur').checked;
-        settings.alertVol = parseInt(document.getElementById('cfg-alert-vol').value);
-        settings.musicVol = parseInt(document.getElementById('cfg-music-vol').value);
-        settings.defaultSound = document.getElementById('cfg-default-sound').value;
+        settings.compact = document.getElementById('cfg-compact')?.checked ?? settings.compact;
+        settings.animations = document.getElementById('cfg-animations')?.checked ?? settings.animations;
+        settings.blur = document.getElementById('cfg-blur')?.checked ?? settings.blur;
+
+        // Sons
+        const alertVolEl = document.getElementById('cfg-alert-vol');
+        if (alertVolEl) settings.alertVol = parseInt(alertVolEl.value);
+
+        const musicVolEl = document.getElementById('cfg-music-vol');
+        if (musicVolEl) settings.musicVol = parseInt(musicVolEl.value);
+
+        const soundEl = document.getElementById('cfg-default-sound');
+        if (soundEl) settings.defaultSound = soundEl.value;
         
         const activeSwatch = document.querySelector('.swatch.active');
         if (activeSwatch) settings.accentColor = activeSwatch.dataset.color;

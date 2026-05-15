@@ -5,6 +5,7 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+
   const DAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'];
   const CAT_LABELS = {
     study: '📚 Estudo',
@@ -146,9 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="act-btn del" title="Remover">✕</button>
     </div>
 `;
-
-
-
         actsEl.appendChild(item);
 
         // Ação de CONCLUIR
@@ -176,12 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ação de DELETAR
         item.querySelector('.act-btn.del').addEventListener('click', async (e) => {
           e.stopPropagation();
+
           if (!confirm("Deseja excluir esta atividade?")) return;
 
           try {
             const response = await fetch('php/api_horarios.php', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' }, // ADICIONADO: Necessário para o PHP ler o JSON
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ action: 'delete', id: act.scheduling_id })
             });
 
@@ -273,6 +272,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch('php/api_horarios.php', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           action: 'clear_week',
           inicio: inicio,
@@ -282,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (response.ok) {
         document.getElementById('modal-clear').classList.remove('open');
-        carregarAtividadesDoBanco();
+        await carregarAtividadesDoBanco();
       } else {
         alert("Erro ao limpar a semana no servidor.");
       }
@@ -327,23 +329,23 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function aplicarTema(settings) {
-    if (!settings || !settings.accentColor) return;
+  if (!settings || !settings.accentColor) return;
 
-    const cores = {
-        'cyan': '#06b6d4',
-        'pink': '#ec4899',
-        'violet': '#8b5cf6',
-        'green': '#10b981',
-        'orange': '#f59e0b'
-    };
+  const cores = {
+    'cyan': '#06b6d4',
+    'pink': '#ec4899',
+    'violet': '#8b5cf6',
+    'green': '#10b981',
+    'orange': '#f59e0b'
+  };
 
-    const hex = cores[settings.accentColor] || cores['cyan'];
-    
-    // Aplica a cor no root do documento (afeta todo o CSS que usa var(--cyan))
-    document.documentElement.style.setProperty('--cyan', hex);
-    
-    // Se quiser aplicar o modo compacto também:
-    document.body.classList.toggle('compact-mode', settings.compact);
+  const hex = cores[settings.accentColor] || cores['cyan'];
+
+  // Aplica a cor no root do documento (afeta todo o CSS que usa var(--cyan))
+  document.documentElement.style.setProperty('--cyan', hex);
+
+  // Se quiser aplicar o modo compacto também:
+  document.body.classList.toggle('compact-mode', settings.compact);
 }
 
 // Executa ao carregar a página
@@ -352,10 +354,10 @@ aplicarTema(settingsSalvas);
 
 // Escuta mudanças em tempo real (se mudar a cor na aba de configurações)
 window.addEventListener('storage', (e) => {
-    if (e.key === 'fs_settings') {
-        const novosSettings = JSON.parse(e.newValue);
-        aplicarTema(novosSettings);
-    }
+  if (e.key === 'fs_settings') {
+    const novosSettings = JSON.parse(e.newValue);
+    aplicarTema(novosSettings);
+  }
 });
 
 /*

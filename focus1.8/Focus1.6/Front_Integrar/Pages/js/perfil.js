@@ -19,12 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Atualiza UI lateral e textos
         document.getElementById('display-name').textContent = p.username;
         document.getElementById('display-tag').textContent = '@' + (p.tag || p.username.toLowerCase().replace(/\s/g, ''));
-        document.getElementById('display-bio').textContent = p.bio || 'Focado em crescer todos os dias.';
 
         // Atualiza Inputs
         document.getElementById('inp-name').value = p.username;
         document.getElementById('inp-tag').value = p.tag || p.username.toLowerCase().replace(/\s/g, '');
-        document.getElementById('inp-bio').value = p.bio || '';
         document.getElementById('inp-email').value = p.email;
 
         // Stats vindas do Banco (conforme SQL)
@@ -140,17 +138,15 @@ window.addEventListener('storage', (e) => {
     });
   }
 
-  // ── Save personal (Nome, Tag, Bio) ──
+  // ── Save personal (Nome, Tag) ──
   document.getElementById('save-personal').addEventListener('click', async () => {
     const username = document.getElementById('inp-name').value.trim();
     const tag = document.getElementById('inp-tag').value.trim();
-    const bio = document.getElementById('inp-bio').value.trim();
 
     const formData = new FormData();
     formData.append('acao', 'update_personal');
     formData.append('username', username);
     formData.append('tag', tag);
-    formData.append('bio', bio);
 
     try {
       const res = await fetch('php/api_perfil.php', { method: 'POST', body: formData });
@@ -200,5 +196,14 @@ window.addEventListener('storage', (e) => {
       showFeedback('security-feedback', '✗ Erro ao salvar', true);
       showToast('Erro: ' + err.message, 'error');
     }
+  });
+
+  // ── Logout ──
+  document.getElementById('btn-logout').addEventListener('click', () => {
+    if (!confirm('Tem certeza que deseja sair da sua conta?')) return;
+
+    localStorage.clear();
+    fetch('php/logout.php', { method: 'POST' }).catch(() => {});
+    window.location.href = '../index.html';
   });
 });

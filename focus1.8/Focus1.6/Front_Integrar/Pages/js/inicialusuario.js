@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => { //a corrigir junto com o php de tarefas
+document.addEventListener('DOMContentLoaded', () => { //corrigido
     // ============================================================
     // 1. GERENCIAMENTO DE ESTADO E SESSÃO 
     // ============================================================
@@ -6,18 +6,51 @@ document.addEventListener('DOMContentLoaded', () => { //a corrigir junto com o p
         try {
             const response = await fetch('php/inicialusuario.php');
             const data = await response.json();
-            const profile = data.profile;
-            const avatar = data.foto;
-            if (data.logado) {
-                document.getElementById('welcome-name').textContent = data.nome;
-                if (data.foto) {
-                    document.getElementById('nav-avatar').src = data.foto;
-                    profile.avatar = data.foto; profile.name = data.nome;
-                    localStorage.setItem('fs_profile', JSON.stringify(profile));
-                }
-                carregarMissoes();
-            } else { window.location.href = 'login.html'; }
-        } catch (e) { console.error("Erro ao carregar dados do banco:", e); }
+
+            if (data && data.logado) {
+                const profileLocal = JSON.parse(localStorage.getItem('fs_profile') || '{}');
+
+                profileLocal.name = data.nome;    
+                profileLocal.avatar = data.foto;  
+                profileLocal.xp = data.xp;
+                profileLocal.streak = data.streak;
+
+                localStorage.setItem('fs_profile', JSON.stringify(profileLocal));
+                renderizarDadosUsuario(profileLocal);
+            } else {
+                window.location.href = 'login.html'; 
+            }
+        } catch (e) {
+            console.error("Erro ao carregar dados do banco:", e);
+        }
+    }
+
+    function renderizarDadosUsuario(p) {
+        if (!p) return;
+        const welcomeEl = document.getElementById('welcome-name');
+        if (welcomeEl) {
+            welcomeEl.textContent = p.name || 'Usuário';
+        }
+
+        const avatares = document.querySelectorAll('.user-avatar-img, #nav-avatar');
+        avatares.forEach(img => {
+            if (p.avatar) {
+                img.src = p.avatar.includes('uploads/') ? p.avatar : 'php/uploads/' + p.avatar;
+            } else {
+                img.src = 'php/uploads/poppy.png';
+            }
+        });
+
+        // 3. Caso você tenha o nome em outros lugares com o ID antigo
+        const nameEl = document.getElementById('user_nome');
+        if (nameEl) nameEl.textContent = p.name || 'Estudante';
+
+        // 4. XP e Streak
+        const xpEl = document.getElementById('user-xp');
+        if (xpEl) xpEl.textContent = (p.xp || 0) + ' XP';
+
+        const streakEl = document.getElementById('user-streak');
+        if (streakEl) streakEl.textContent = (p.streak || 0) + ' dias';
     }
 
     // ══════════════════════════════════════════
@@ -406,60 +439,6 @@ document.addEventListener('DOMContentLoaded', () => { //a corrigir junto com o p
 
     // Inicialização
     carregarMissoes();
-
-    // ============================================================
-    // NOTAS E INICIALIZAÇÃO FINAL
-    // ============================================================
-    const noteArea = document.getElementById('quick-note');
-    const charCount = document.getElementById('note-chars');
-    const noteSaved = document.getElementById('note-saved');
-
-    if (noteArea) {
-        noteArea.value = localStorage.getItem('fs_current_note') || '';
-        charCount.innerText = `${noteArea.value.length}/1000`;
-
-        noteArea.addEventListener('input', () => {
-            localStorage.setItem('fs_current_note', noteArea.value);
-            charCount.innerText = `${noteArea.value.length}/1000`;
-            noteSaved.style.opacity = '1';
-            setTimeout(() => noteSaved.style.opacity = '0', 2000);
-        });
-    }
-
-    document.getElementById('btn-save-note')?.addEventListener('click', () => {
-        const text = noteArea.value.trim();
-        if (!text) return;
-        const history = JSON.parse(localStorage.getItem('fs_note_history') || '[]');
-        history.unshift({ text, date: new Date().toLocaleString('pt-BR') });
-        localStorage.setItem('fs_note_history', JSON.stringify(history.slice(0, 10)));
-        noteArea.value = '';
-        localStorage.setItem('fs_current_note', '');
-        charCount.innerText = `0/1000`;
-        renderHistory();
-    });
-    document.getElementById('btn-clear-note')?.addEventListener('click', () => {
-        if (confirm("Deseja apagar o rascunho da nota?")) {
-            noteArea.value = '';
-            localStorage.setItem('fs_current_note', '');
-            charCount.innerText = `0/1000`;
-        }
-    });
-
-    function renderHistory() {
-        const historyList = document.getElementById('note-history-list');
-        const emptyMsg = document.getElementById('note-history-empty');
-        const history = JSON.parse(localStorage.getItem('fs_note_history') || '[]');
-        if (!historyList) return;
-        historyList.innerHTML = '';
-        if (emptyMsg) emptyMsg.style.display = history.length === 0 ? 'flex' : 'none';
-        document.getElementById('note-history-count').innerText = `${history.length} notas`;
-        history.forEach(item => {
-            const li = document.createElement('li');
-            li.className = 'history-item';
-            li.innerHTML = `<small>${item.date}</small><p>${item.text}</p>`;
-            historyList.appendChild(li);
-        });
-    }
 
     const modalAdd = document.getElementById('modal-add-task');
     const modalDelete = document.getElementById('modal-delete-task');
