@@ -1,7 +1,9 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/MySQLClass.php';
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 $profile_id = $_SESSION['profile_id'] ?? null;
 
@@ -27,9 +29,6 @@ try {
 
         $res = $db->searchSafe($sql, [$email]);
         $usuario = $res[0] ?? null;
-
-        error_log("Senha digitada: " . $senha);
-        error_log("Hash no banco: " . $usuario['password']);
 
         if (!$usuario) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Utilizador não encontrado ou não é Admin.']);
@@ -71,12 +70,17 @@ try {
 
     // LISTAR MEUS CHAMADOS
     if ($metodo === 'GET' && isset($_GET['listar'])) {
-        $profileId = $_SESSION['profile_id'] ?? 0;
+        $profile_id = (int)($_SESSION['profile_id'] ?? null);
+
+        if ($profile_id <= 0) {
+            http_response_code(401);
+            echo json_encode(["Sessão expirada. Faça login novamente."]);
+        }
 
         $sql = "SELECT code, subject, priority, status, created_at 
                 FROM calls WHERE profile_id = ? ORDER BY created_at DESC";
 
-        $tickets = $db->searchSafe($sql, [$profileId]);
+        $tickets = $db->searchSafe($sql, [$profile_id]);
         echo json_encode(['sucesso' => true, 'tickets' => $tickets]);
         exit;
     }
