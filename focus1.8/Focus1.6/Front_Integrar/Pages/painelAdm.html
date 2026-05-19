@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel ADM — Focus Study</title>
+    <link rel="stylesheet" href="../css/styles.css" />
+    <link rel="stylesheet" href="../css/adm.css" />
+    <link rel="icon" type="image/png" href="../images/poppy.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body class="adm-body">
+
+<!-- ════════════════════════════
+     AUTH OVERLAY (enquanto verifica)
+════════════════════════════ -->
+<div class="adm-auth-screen" id="adm-auth-screen">
+    <div class="adm-auth-spinner"></div>
+</div>
+
+<!-- ════════════════════════════
+     SIDEBAR
+════════════════════════════ -->
+<aside class="adm-sidebar" id="adm-sidebar">
+
+    <div class="sidebar-logo">
+        <div class="sidebar-logo-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+            <span class="logo-text">Focus Study</span>
+            <span class="logo-badge">ADM</span>
+        </div>
+    </div>
+
+    <div class="sidebar-admin">
+        <img class="sidebar-admin-avatar" id="sidebar-avatar"
+             src="https://ui-avatars.com/api/?name=Admin&background=06b6d4&color=fff"
+             alt="Admin">
+        <div class="sidebar-admin-info">
+            <div class="sidebar-admin-name" id="sidebar-name">Carregando…</div>
+            <div class="sidebar-admin-role">
+                <span class="role-dot"></span>Administrador
+            </div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <p class="sidebar-nav-label">Principal</p>
+
+        <button class="sidebar-link active" data-section="dashboard">
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-chart-pie"></i>
+            </span>
+            <span>Dashboard</span>
+        </button>
+
+        <button class="sidebar-link" data-section="usuarios">
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <span>Usuários</span>
+        </button>
+
+        <button class="sidebar-link" data-section="chamados">
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-headset"></i>
+            </span>
+            <span>Chamados</span>
+            <span class="sidebar-badge" id="sidebar-open-count"></span>
+        </button>
+
+        <p class="sidebar-nav-label">Sistema</p>
+
+        <a href="../php/logout.php" class="sidebar-link sidebar-link-danger">
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>Sair</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+        Focus Study &copy; 2025
+    </div>
+
+</aside>
+
+<!-- ════════════════════════════
+     ÁREA PRINCIPAL
+════════════════════════════ -->
+<div class="adm-main">
+
+    <!-- Top bar -->
+    <div class="adm-topbar">
+        <div class="adm-topbar-left">
+            <button class="adm-menu-toggle" id="adm-menu-toggle" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div>
+                <div class="adm-topbar-title" id="adm-topbar-title">Dashboard</div>
+                <div class="adm-topbar-sub" id="adm-topbar-sub">Visão geral do sistema</div>
+            </div>
+        </div>
+        <div class="adm-topbar-right">
+            <div class="adm-topbar-date" id="adm-date"></div>
+        </div>
+    </div>
+
+    <div class="adm-content">
+
+        <!-- ══════════════════════════
+             SEÇÃO: DASHBOARD
+        ══════════════════════════ -->
+        <div class="adm-section active" id="section-dashboard">
+
+            <div class="adm-kpi-grid">
+
+                <div class="adm-kpi-card kpi-accent-cyan">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-cyan">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span class="adm-kpi-trend" id="kpi-trend-users"></span>
+                    </div>
+                    <div class="adm-kpi-value" id="kpi-total-users">—</div>
+                    <div class="adm-kpi-label">Total de Usuários</div>
+                </div>
+
+                <div class="adm-kpi-card kpi-accent-green">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-green">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                    </div>
+                    <div class="adm-kpi-value" id="kpi-new-today">—</div>
+                    <div class="adm-kpi-label">Novos Hoje</div>
+                </div>
+
+                <div class="adm-kpi-card kpi-accent-yellow">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-yellow">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
+                    </div>
+                    <div class="adm-kpi-value" id="kpi-open-tickets">—</div>
+                    <div class="adm-kpi-label">Tickets Abertos</div>
+                </div>
+
+                <div class="adm-kpi-card kpi-accent-pink">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-pink">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
+                    </div>
+                    <div class="adm-kpi-value" id="kpi-total-tickets">—</div>
+                    <div class="adm-kpi-label">Total de Tickets</div>
+                </div>
+
+            </div>
+
+            <div class="adm-dash-grid">
+
+                <!-- Usuários recentes -->
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <div class="adm-card-title">Usuários Recentes</div>
+                            <div class="adm-card-sub">Últimos cadastros</div>
+                        </div>
+                        <button class="adm-btn adm-btn-ghost" data-section="usuarios">
+                            Ver todos <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="adm-table-wrap">
+                        <table class="adm-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Tipo</th>
+                                    <th>XP</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-users-tbody">
+                                <tr><td colspan="3"><div class="adm-loading"><div class="adm-spinner"></div></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Chamados recentes -->
+                <div class="adm-card">
+                    <div class="adm-card-header">
+                        <div>
+                            <div class="adm-card-title">Chamados Recentes</div>
+                            <div class="adm-card-sub">Últimos tickets recebidos</div>
+                        </div>
+                        <button class="adm-btn adm-btn-ghost" data-section="chamados">
+                            Ver todos <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="adm-table-wrap">
+                        <table class="adm-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Assunto</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-tickets-tbody">
+                                <tr><td colspan="4"><div class="adm-loading"><div class="adm-spinner"></div></div></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ══════════════════════════
+             SEÇÃO: USUÁRIOS
+        ══════════════════════════ -->
+        <div class="adm-section" id="section-usuarios">
+
+            <div class="adm-section-header">
+                <div>
+                    <div class="adm-section-title">Usuários</div>
+                    <div class="adm-section-subtitle">Gerencie todos os usuários da plataforma</div>
+                </div>
+            </div>
+
+            <div class="adm-search-wrap">
+                <i class="fa-solid fa-magnifying-glass adm-search-icon"></i>
+                <input class="adm-search-input" id="user-search"
+                       type="search" placeholder="Buscar por nome ou e-mail…"
+                       autocomplete="off">
+            </div>
+
+            <div class="adm-card">
+                <div class="adm-card-header">
+                    <div>
+                        <div class="adm-card-title">Lista de Usuários</div>
+                        <div class="adm-card-sub" id="usuarios-count-label">carregando…</div>
+                    </div>
+                </div>
+                <div class="adm-table-wrap">
+                    <table class="adm-table">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Usuário</th>
+                                <th>E-mail</th>
+                                <th>XP</th>
+                                <th>Streak</th>
+                                <th>Tipo</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuarios-tbody">
+                            <tr><td colspan="7"><div class="adm-loading"><div class="adm-spinner"></div></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ══════════════════════════
+             SEÇÃO: CHAMADOS
+        ══════════════════════════ -->
+        <div class="adm-section" id="section-chamados">
+
+            <div class="adm-section-header">
+                <div>
+                    <div class="adm-section-title">Chamados de Suporte</div>
+                    <div class="adm-section-subtitle">Gerencie os tickets enviados pelos usuários</div>
+                </div>
+            </div>
+
+            <div class="adm-tabs-bar">
+                <div class="adm-tabs">
+                    <button class="adm-tab active" data-status="all">Todos</button>
+                    <button class="adm-tab" data-status="pending">
+                        <span class="tab-dot dot-yellow"></span>Abertos
+                    </button>
+                    <button class="adm-tab" data-status="replied">
+                        <span class="tab-dot dot-cyan"></span>Em andamento
+                    </button>
+                    <button class="adm-tab" data-status="closed">
+                        <span class="tab-dot dot-green"></span>Resolvidos
+                    </button>
+                </div>
+                <div class="adm-card-sub" id="chamados-count-label">carregando…</div>
+            </div>
+
+            <div class="adm-card">
+                <div class="adm-table-wrap">
+                    <table class="adm-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Solicitante</th>
+                                <th>Assunto</th>
+                                <th>Categoria</th>
+                                <th>Prioridade</th>
+                                <th>Status</th>
+                                <th>Data</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="chamados-tbody">
+                            <tr><td colspan="8"><div class="adm-loading"><div class="adm-spinner"></div></div></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div><!-- /adm-content -->
+</div><!-- /adm-main -->
+
+<!-- ════════════════════════════
+     MODAL: USUÁRIO
+════════════════════════════ -->
+<div class="adm-modal-overlay" id="modal-user">
+    <div class="adm-modal">
+        <div class="adm-modal-header">
+            <div>
+                <div class="adm-modal-id" id="modal-user-id"></div>
+                <div class="adm-modal-title" id="modal-user-name"></div>
+            </div>
+            <button class="adm-modal-close" data-close="modal-user">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="adm-modal-body">
+            <div class="modal-avatar-wrap">
+                <img id="modal-user-avatar" src="" alt=""
+                     class="modal-avatar">
+                <div>
+                    <div style="font-size:16px;font-weight:700" id="modal-user-name2"></div>
+                    <div id="modal-user-role-badge"></div>
+                </div>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-envelope"></i> E-mail</span>
+                <span id="modal-user-email"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-star"></i> XP Total</span>
+                <span id="modal-user-xp" style="color:var(--cyan);font-weight:600"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-fire"></i> Streak</span>
+                <span id="modal-user-streak" style="color:#f97316;font-weight:600"></span>
+            </div>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn adm-btn-danger" id="modal-user-delete-btn">
+                <i class="fa-solid fa-trash"></i> Deletar Usuário
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ════════════════════════════
+     MODAL: CHAMADO
+════════════════════════════ -->
+<div class="adm-modal-overlay" id="modal-ticket">
+    <div class="adm-modal">
+        <div class="adm-modal-header">
+            <div>
+                <div class="adm-modal-id" id="modal-ticket-id"></div>
+                <div class="adm-modal-title" id="modal-ticket-subject"></div>
+            </div>
+            <button class="adm-modal-close" data-close="modal-ticket">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="adm-modal-body">
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-user"></i> Nome</span>
+                <span id="modal-ticket-name"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-envelope"></i> E-mail</span>
+                <a id="modal-ticket-email" href="#" style="color:var(--cyan)"></a>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-tag"></i> Categoria</span>
+                <span id="modal-ticket-cat"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-flag"></i> Prioridade</span>
+                <span id="modal-ticket-prio"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-circle-dot"></i> Status</span>
+                <span id="modal-ticket-status"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-regular fa-calendar"></i> Data</span>
+                <span id="modal-ticket-date"></span>
+            </div>
+            <div class="adm-modal-msg-label">Mensagem</div>
+            <div class="adm-modal-message" id="modal-ticket-msg"></div>
+
+            <!-- Resposta anterior (oculta por padrão) -->
+            <div class="adm-modal-msg-label" id="modal-reply-prev-label" style="display:none">Resposta Anterior</div>
+            <div class="adm-modal-message adm-reply-prev" id="modal-ticket-reply-prev" style="display:none"></div>
+
+            <!-- Campo de nova resposta -->
+            <div class="adm-modal-msg-label">Responder</div>
+            <textarea id="modal-ticket-reply-input" class="adm-reply-textarea" placeholder="Digite sua resposta..."></textarea>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn adm-btn-primary" id="modal-ticket-reply-btn">
+                <i class="fa-solid fa-paper-plane"></i> Enviar Resposta
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="adm-toast"></div>
+
+<script src="../js/adm.js"></script>
+<script src="../js/avatar.js" ></script>
+</body>
+</html>
