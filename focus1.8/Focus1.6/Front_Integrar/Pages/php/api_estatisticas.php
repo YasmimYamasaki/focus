@@ -17,43 +17,50 @@ try {
     $db = new MySQLClass();
     $conn = $db->getConnection();
     $mysql = $db;
+    
 
-    /* ── GET estatísticas (mesmo padrão de api_horarios.php) ── */
+    /* ── estatísticas ── */
     if ($action === 'stats' && $method === 'GET') {
         $period = $_GET['period'] ?? 'weekly'; // daily, weekly, monthly, semester, annual
+        $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0; // Nova variável para deslocamento
         $inicio = $_GET['inicio'] ?? date('Y-m-d');
         $fim = $_GET['fim'] ?? date('Y-m-d');
 
-        // Define período (mesmo padrão que horários)
+        // Define período (mesmo padrão que horários, agora com suporte a offset)
         switch ($period) {
             case 'daily':
-                $inicio = date('Y-m-d');
-                $fim = date('Y-m-d');
+                $inicio = date('Y-m-d', strtotime("$offset days"));
+                $fim = date('Y-m-d', strtotime("$offset days"));
                 break;
             case 'weekly':
-                $inicio = date('Y-m-d', strtotime('-6 days'));
-                $fim = date('Y-m-d');
+                // Retrocede 6 dias a partir do offset
+                $base = strtotime("$offset weeks");
+                $inicio = date('Y-m-d', strtotime('-6 days', $base));
+                $fim = date('Y-m-d', $base);
                 break;
             case 'monthly':
-                $inicio = date('Y-m-01');
-                $fim = date('Y-m-t');
+                // Calcula o mês baseado no offset
+                $inicio = date('Y-m-01', strtotime("$offset months"));
+                $fim = date('Y-m-t', strtotime("$offset months"));
                 break;
             case 'semester':
-                $month = intval(date('m'));
-                $year = intval(date('Y'));
+                $base_time = strtotime(($offset * 6) . " months");
+                $month = intval(date('m', $base_time));
+                $year = intval(date('Y', $base_time));
                 $inicio = $month <= 6 ? "$year-01-01" : "$year-07-01";
                 $fim = $month <= 6 ? "$year-06-30" : "$year-12-31";
                 break;
             case 'annual':
-                $inicio = date('Y') . '-01-01';
-                $fim = date('Y') . '-12-31';
+                $year = intval(date('Y')) + $offset;
+                $inicio = $year . '-01-01';
+                $fim = $year . '-12-31';
                 break;
         }
 
         $inicio_full = $inicio . ' 00:00:00';
         $fim_full = $fim . ' 23:59:59';
 
-        // Busca tarefas (missões) usando mesma estrutura de api_horarios.php
+        // Busca tarefas 
         $sql = "SELECT
                     DATE(s.start_time) as data,
                     COUNT(DISTINCT sch.scheduling_id) as total_tarefas,
@@ -85,7 +92,7 @@ try {
             $current->modify('+1 day');
         }
 
-        // Preenche com dados reais
+        // Preenche com dados 
         foreach ($result as $row) {
             $row['completas'] = (int)$row['completas'];
             $row['incompletas'] = (int)$row['incompletas'];
@@ -123,14 +130,14 @@ try {
         exit;
     }
 
-    /* ── GET resumo geral (mesmo padrão de tasks_view) ── */
+    /* ── GET resumo geral ── */
     if ($action === 'summary' && $method === 'GET') {
         $thisMonth = date('Y-m-d', strtotime('first day of this month'));
         $thisMonthEnd = date('Y-m-t');
         $thisMonth_full = $thisMonth . ' 00:00:00';
         $thisMonthEnd_full = $thisMonthEnd . ' 23:59:59';
 
-        // Total de tarefas únicas (mesmo padrão)
+        // Total de tarefas únicas 
         $sql = "SELECT COUNT(DISTINCT t.task_id) as total
                 FROM tasks t
                 INNER JOIN schedulings sch ON t.task_id = sch.task_id
@@ -149,7 +156,7 @@ try {
         $res = $mysql->searchSafe($sql, [$profile_id, $thisMonth_full, $thisMonthEnd_full]);
         $doneThisMonth = (int)($res[0]['total'] ?? 0);
 
-        // Taxa geral (mesmo padrão de XP trigger)
+        // Taxa geral
         $sql = "SELECT
                     SUM(CASE WHEN sch.done = 1 THEN 1 ELSE 0 END) as completas,
                     COUNT(DISTINCT sch.scheduling_id) as total
@@ -173,6 +180,8 @@ try {
 
     http_response_code(404);
     echo json_encode(['error' => 'Ação não encontrada']);
+
+    
 
 } catch (Throwable $e) {
     http_response_code(500);

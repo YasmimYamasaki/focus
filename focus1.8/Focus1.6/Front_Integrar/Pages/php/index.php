@@ -1,7 +1,9 @@
 <?php
-//corrigir IA por completo!!!!
+error_reporting(0); // Desativa a exibição de erros na resposta do chat
+session_start(); // Adicionado para pegar o nome do usuário
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include "config.php";
+    // Certifique-se que o config.php existe e tem o loadEnv e o $PROMPT
+    include __DIR__ . "/config.php"; 
 
     header("Content-Type: text/plain; charset=UTF-8");
 
@@ -14,9 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $prompt = str_replace("{USER_INPUT}", $user, $PROMPT);
 
-    // ✅ Modelo corrigido — gemini-flash-lite-latest foi descontinuado
-    $model = "gemini-2.5-flash";
-    $url   = "https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=" . $API_KEY;
+    // Modelo correto e estável
+    $model = "gemini-1.5-flash"; 
+    $url = "https://generativelanguage.googleapis.com/v1beta/models/" . $model . ":generateContent?key=" . $GOOGLE_API_KEY;
 
     $data = [
         "contents" => [[
@@ -32,36 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         CURLOPT_HTTPHEADER     => ["Content-Type: application/json"],
         CURLOPT_POSTFIELDS     => json_encode($data),
         CURLOPT_SSL_VERIFYPEER => false,
-        CURLOPT_SSL_VERIFYHOST => false,
         CURLOPT_TIMEOUT        => 20,
     ]);
 
     $response = curl_exec($ch);
-
-    if (curl_errno($ch)) {
-        echo "Erro CURL: " . curl_error($ch) . " GG! 🚀";
-        exit;
-    }
+    $result = json_decode($response, true);
     curl_close($ch);
 
-    $result = json_decode($response, true);
-
-    // Resposta OK
     if (isset($result["candidates"][0]["content"]["parts"][0]["text"])) {
         $text = $result["candidates"][0]["content"]["parts"][0]["text"];
         echo trim(preg_replace('/\s+/', ' ', $text));
-        exit;
+    } elseif (isset($result["error"])) {
+        echo "Erro API: " . $result["error"]["message"];
+    } else {
+        echo "🐰 Poppy está offline por um momento. Tente de novo!";
     }
-
-    // Mostra o erro real da API para facilitar debug
-    if (isset($result["error"])) {
-        echo "Erro API [" . $result["error"]["code"] . "]: " . $result["error"]["message"];
-        exit;
-    }
-
-    echo "Resposta inesperada.";
     exit;
 }
+// Pega o nome do usuário para a saudação inicial
+$nomeUsuario = $_SESSION['user_name'] ?? 'estudante';
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -102,6 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<script src="chat.js"></script>
+<script src="../js/chat.js" ></script>
 </body>
 </html>

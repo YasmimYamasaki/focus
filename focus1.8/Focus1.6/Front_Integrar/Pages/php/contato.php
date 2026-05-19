@@ -3,8 +3,6 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/MySQLClass.php';
 session_start();
 
-$mysql = new MySQLClass();
-
 $profile_id = $_SESSION['profile_id'] ?? null;
 
 if (!$profile_id) {
@@ -30,6 +28,9 @@ try {
         $res = $db->searchSafe($sql, [$email]);
         $usuario = $res[0] ?? null;
 
+        error_log("Senha digitada: " . $senha);
+        error_log("Hash no banco: " . $usuario['password']);
+
         if (!$usuario) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Utilizador não encontrado ou não é Admin.']);
         } else if (!password_verify($senha, $usuario['password'])) {
@@ -40,8 +41,6 @@ try {
             echo json_encode(['sucesso' => true]);
         }
         exit;
-        error_log("Senha digitada: " . $senha);
-        error_log("Hash no banco: " . $usuario['password']);
     }
 
 
