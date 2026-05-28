@@ -1,7 +1,9 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/MySQLClass.php'; 
-session_start();
 
 $mysql = new MySQLClass();
 $profile_id = $_SESSION['profile_id'] ?? null;
@@ -25,9 +27,42 @@ try {
                 WHERE p.profile_id = ?";
 
         $res = $mysql->searchSafe($sql, [$profile_id]);
-        if (!$res) throw new Exception("Perfil não encontrado");
+        if (!$res || empty($res)) {
+            http_response_code(404);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Perfil não encontrado'
+            ]);
+            exit;
+        }
 
-        echo json_encode(['success' => true, 'data' => $res[0]]);
+        $profile = $res[0];
+
+        // Calcula sequência: dias consecutivos (mais recente primeiro) com ao menos 1 scheduling concluído
+        $streakSql = "SELECT DATE(s.start_time) AS activity_day
+                      FROM schedulings sch
+                      INNER JOIN schedules s ON sch.schedule_id = s.schedule_id
+                      WHERE sch.done = 1 AND s.profile_id = ?
+                      GROUP BY DATE(s.start_time)
+                      ORDER BY activity_day DESC";
+        $streakRows = $mysql->searchSafe($streakSql, [$profile_id]);
+
+        $streak = 0;
+        if ($streakRows) {
+            $expected = new DateTime('today');
+            foreach ($streakRows as $row) {
+                $day = new DateTime($row['activity_day']);
+                if ($day->format('Y-m-d') === $expected->format('Y-m-d')) {
+                    $streak++;
+                    $expected->modify('-1 day');
+                } else {
+                    break;
+                }
+            }
+        }
+        $profile['streak'] = $streak;
+
+        echo json_encode(['success' => true, 'data' => $profile]);
         exit;
     }
 
@@ -103,5 +138,9 @@ try {
     if (isset($conn) && $method === 'POST') {
         $conn->rollback();
     }
+    if (http_response_code() === 200) {
+        http_response_code(400);
+    }
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    exit;
 }
