@@ -26,10 +26,10 @@
 }
 .fullscreen-btn:hover { border-color: var(--cyan); color: var(--cyan); }
 
-/* ── Segunda linha (música + notas) ── */
+/* ── Segunda linha (música) ── */
 .dash-grid-bottom {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 24px;
   margin-top: 24px;
   align-items: start;
@@ -37,16 +37,6 @@
 
 .dash-grid-bottom > .dash-card {
   min-height: 320px;
-}
-
-/* Notas: tornar o textarea mais alto */
-.notes-card .quick-note {
-  min-height: 120px !important;
-  flex: 1;
-}
-
-.notes-card .note-history-list {
-  max-height: 200px !important;
 }
 
 /* ── Shuffle button ── */

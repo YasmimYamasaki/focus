@@ -1,13 +1,3 @@
-<?php
-session_start();
-require_once __DIR__ . '/../Functions/auth.php';
-proteger('admin');
-
-$adminNome = $_SESSION['user_nome'] ?? 'Admin';
-$adminFoto = $_SESSION['user_foto'] ?? '';
-$avatarUrl = $adminFoto
-    ?: 'https://ui-avatars.com/api/?name=' . urlencode($adminNome) . '&background=06b6d4&color=fff';
-?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -22,79 +12,80 @@ $avatarUrl = $adminFoto
 <body class="adm-body">
 
 <!-- ════════════════════════════
+     AUTH OVERLAY (enquanto verifica)
+════════════════════════════ -->
+<div class="adm-auth-screen" id="adm-auth-screen">
+    <div class="adm-auth-spinner"></div>
+</div>
+
+<!-- ════════════════════════════
      SIDEBAR
 ════════════════════════════ -->
 <aside class="adm-sidebar" id="adm-sidebar">
 
     <div class="sidebar-logo">
-        <span class="logo-text">Focus Study</span>
-        <span class="logo-badge">Painel ADM</span>
+        <div class="sidebar-logo-icon">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+            <span class="logo-text">Focus Study</span>
+            <span class="logo-badge">ADM</span>
+        </div>
     </div>
 
     <div class="sidebar-admin">
-        <img class="sidebar-admin-avatar"
-             src="<?= htmlspecialchars($avatarUrl) ?>"
-             alt="Avatar do admin">
+        <img class="sidebar-admin-avatar" id="sidebar-avatar"
+             src="https://ui-avatars.com/api/?name=Admin&background=06b6d4&color=fff"
+             alt="Admin">
         <div class="sidebar-admin-info">
-            <div class="sidebar-admin-name"><?= htmlspecialchars($adminNome) ?></div>
-            <div class="sidebar-admin-role">Administrador</div>
+            <div class="sidebar-admin-name" id="sidebar-name">Carregando…</div>
+            <div class="sidebar-admin-role">
+                <span class="role-dot"></span>Administrador
+            </div>
         </div>
     </div>
 
     <nav class="sidebar-nav">
 
-        <div class="sidebar-nav-label">Principal</div>
+        <p class="sidebar-nav-label">Principal</p>
 
         <button class="sidebar-link active" data-section="dashboard">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-                <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
-            </svg>
-            Dashboard
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-chart-pie"></i>
+            </span>
+            <span>Dashboard</span>
         </button>
 
         <button class="sidebar-link" data-section="usuarios">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            Usuários
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-users"></i>
+            </span>
+            <span>Usuários</span>
         </button>
 
         <button class="sidebar-link" data-section="chamados">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-            </svg>
-            Chamados
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-headset"></i>
+            </span>
+            <span>Chamados</span>
+            <span class="sidebar-badge" id="sidebar-open-count"></span>
         </button>
 
-        <div class="sidebar-nav-label">Acesso Rápido</div>
-
-        <a href="../inicialusuario.html" class="sidebar-link">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-            </svg>
-            Painel do Usuário
-        </a>
-
-        <a href="../suporte-admin.html" class="sidebar-link">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/>
-            </svg>
-            Suporte (legado)
-        </a>
-
-        <div class="sidebar-nav-label">Conta</div>
+        <p class="sidebar-nav-label">Sistema</p>
 
         <a href="../php/logout.php" class="sidebar-link sidebar-link-danger">
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
-            </svg>
-            Sair
+            <span class="sidebar-link-icon">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+            <span>Sair</span>
         </a>
 
     </nav>
+
+    <div class="sidebar-footer">
+        Focus Study &copy; 2025
+    </div>
+
 </aside>
 
 <!-- ════════════════════════════
@@ -104,19 +95,17 @@ $avatarUrl = $adminFoto
 
     <!-- Top bar -->
     <div class="adm-topbar">
-        <div>
-            <div class="adm-topbar-title" id="adm-topbar-title">Dashboard</div>
-            <div class="adm-topbar-sub"   id="adm-topbar-sub">Visão geral do sistema</div>
+        <div class="adm-topbar-left">
+            <button class="adm-menu-toggle" id="adm-menu-toggle" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div>
+                <div class="adm-topbar-title" id="adm-topbar-title">Dashboard</div>
+                <div class="adm-topbar-sub" id="adm-topbar-sub">Visão geral do sistema</div>
+            </div>
         </div>
         <div class="adm-topbar-right">
-            <span class="adm-topbar-date" id="adm-date"></span>
-            <button class="adm-menu-toggle" id="adm-menu-toggle" aria-label="Menu">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <line x1="3" y1="6"  x2="21" y2="6"/>
-                    <line x1="3" y1="12" x2="21" y2="12"/>
-                    <line x1="3" y1="18" x2="21" y2="18"/>
-                </svg>
-            </button>
+            <div class="adm-topbar-date" id="adm-date"></div>
         </div>
     </div>
 
@@ -127,36 +116,44 @@ $avatarUrl = $adminFoto
         ══════════════════════════ -->
         <div class="adm-section active" id="section-dashboard">
 
-            <!-- KPIs -->
             <div class="adm-kpi-grid">
 
-                <div class="adm-kpi-card">
-                    <div class="adm-kpi-icon kpi-cyan">
-                        <i class="fa-solid fa-users"></i>
+                <div class="adm-kpi-card kpi-accent-cyan">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-cyan">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span class="adm-kpi-trend" id="kpi-trend-users"></span>
                     </div>
                     <div class="adm-kpi-value" id="kpi-total-users">—</div>
                     <div class="adm-kpi-label">Total de Usuários</div>
                 </div>
 
-                <div class="adm-kpi-card">
-                    <div class="adm-kpi-icon kpi-green">
-                        <i class="fa-solid fa-user-plus"></i>
+                <div class="adm-kpi-card kpi-accent-green">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-green">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
                     </div>
                     <div class="adm-kpi-value" id="kpi-new-today">—</div>
                     <div class="adm-kpi-label">Novos Hoje</div>
                 </div>
 
-                <div class="adm-kpi-card">
-                    <div class="adm-kpi-icon kpi-yellow">
-                        <i class="fa-solid fa-ticket"></i>
+                <div class="adm-kpi-card kpi-accent-yellow">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-yellow">
+                            <i class="fa-solid fa-envelope-open-text"></i>
+                        </div>
                     </div>
                     <div class="adm-kpi-value" id="kpi-open-tickets">—</div>
                     <div class="adm-kpi-label">Tickets Abertos</div>
                 </div>
 
-                <div class="adm-kpi-card">
-                    <div class="adm-kpi-icon kpi-pink">
-                        <i class="fa-solid fa-headset"></i>
+                <div class="adm-kpi-card kpi-accent-pink">
+                    <div class="adm-kpi-top">
+                        <div class="adm-kpi-icon kpi-pink">
+                            <i class="fa-solid fa-ticket"></i>
+                        </div>
                     </div>
                     <div class="adm-kpi-value" id="kpi-total-tickets">—</div>
                     <div class="adm-kpi-label">Total de Tickets</div>
@@ -164,14 +161,18 @@ $avatarUrl = $adminFoto
 
             </div>
 
-            <!-- Tabelas rápidas -->
             <div class="adm-dash-grid">
 
                 <!-- Usuários recentes -->
                 <div class="adm-card">
                     <div class="adm-card-header">
-                        <div class="adm-card-title">Usuários Recentes</div>
-                        <button class="adm-btn adm-btn-outline" data-section="usuarios">Ver todos</button>
+                        <div>
+                            <div class="adm-card-title">Usuários Recentes</div>
+                            <div class="adm-card-sub">Últimos cadastros</div>
+                        </div>
+                        <button class="adm-btn adm-btn-ghost" data-section="usuarios">
+                            Ver todos <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
                     <div class="adm-table-wrap">
                         <table class="adm-table">
@@ -192,8 +193,13 @@ $avatarUrl = $adminFoto
                 <!-- Chamados recentes -->
                 <div class="adm-card">
                     <div class="adm-card-header">
-                        <div class="adm-card-title">Chamados Recentes</div>
-                        <button class="adm-btn adm-btn-outline" data-section="chamados">Ver todos</button>
+                        <div>
+                            <div class="adm-card-title">Chamados Recentes</div>
+                            <div class="adm-card-sub">Últimos tickets recebidos</div>
+                        </div>
+                        <button class="adm-btn adm-btn-ghost" data-section="chamados">
+                            Ver todos <i class="fa-solid fa-arrow-right"></i>
+                        </button>
                     </div>
                     <div class="adm-table-wrap">
                         <table class="adm-table">
@@ -227,30 +233,31 @@ $avatarUrl = $adminFoto
                 </div>
             </div>
 
-            <div class="adm-search-bar">
-                <input class="adm-search-input"
-                       id="user-search"
-                       type="search"
-                       placeholder="Buscar por nome ou e-mail…"
+            <div class="adm-search-wrap">
+                <i class="fa-solid fa-magnifying-glass adm-search-icon"></i>
+                <input class="adm-search-input" id="user-search"
+                       type="search" placeholder="Buscar por nome ou e-mail…"
                        autocomplete="off">
             </div>
 
             <div class="adm-card">
                 <div class="adm-card-header">
-                    <div class="adm-card-title">Lista de Usuários</div>
-                    <span class="adm-card-count" id="usuarios-count">—</span>
+                    <div>
+                        <div class="adm-card-title">Lista de Usuários</div>
+                        <div class="adm-card-sub" id="usuarios-count-label">carregando…</div>
+                    </div>
                 </div>
                 <div class="adm-table-wrap">
                     <table class="adm-table">
                         <thead>
                             <tr>
                                 <th>#ID</th>
-                                <th>Nome</th>
+                                <th>Usuário</th>
                                 <th>E-mail</th>
                                 <th>XP</th>
                                 <th>Streak</th>
                                 <th>Tipo</th>
-                                <th>Ações</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="usuarios-tbody">
@@ -272,19 +279,25 @@ $avatarUrl = $adminFoto
                     <div class="adm-section-title">Chamados de Suporte</div>
                     <div class="adm-section-subtitle">Gerencie os tickets enviados pelos usuários</div>
                 </div>
+            </div>
+
+            <div class="adm-tabs-bar">
                 <div class="adm-tabs">
-                    <button class="adm-tab active" data-ticket-filter="all">Todos</button>
-                    <button class="adm-tab" data-ticket-filter="open">Abertos</button>
-                    <button class="adm-tab" data-ticket-filter="in_progress">Em andamento</button>
-                    <button class="adm-tab" data-ticket-filter="resolved">Resolvidos</button>
+                    <button class="adm-tab active" data-status="all">Todos</button>
+                    <button class="adm-tab" data-status="pending">
+                        <span class="tab-dot dot-yellow"></span>Abertos
+                    </button>
+                    <button class="adm-tab" data-status="replied">
+                        <span class="tab-dot dot-cyan"></span>Em andamento
+                    </button>
+                    <button class="adm-tab" data-status="closed">
+                        <span class="tab-dot dot-green"></span>Resolvidos
+                    </button>
                 </div>
+                <div class="adm-card-sub" id="chamados-count-label">carregando…</div>
             </div>
 
             <div class="adm-card">
-                <div class="adm-card-header">
-                    <div class="adm-card-title">Lista de Chamados</div>
-                    <span class="adm-card-count" id="chamados-count">—</span>
-                </div>
                 <div class="adm-table-wrap">
                     <table class="adm-table">
                         <thead>
@@ -296,7 +309,7 @@ $avatarUrl = $adminFoto
                                 <th>Prioridade</th>
                                 <th>Status</th>
                                 <th>Data</th>
-                                <th>Ações</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="chamados-tbody">
@@ -314,40 +327,43 @@ $avatarUrl = $adminFoto
 <!-- ════════════════════════════
      MODAL: USUÁRIO
 ════════════════════════════ -->
-<div class="adm-modal-overlay" id="modal-user" onclick="if(event.target===this)closeModal('modal-user')">
+<div class="adm-modal-overlay" id="modal-user">
     <div class="adm-modal">
         <div class="adm-modal-header">
             <div>
                 <div class="adm-modal-id" id="modal-user-id"></div>
                 <div class="adm-modal-title" id="modal-user-name"></div>
             </div>
-            <button class="adm-modal-close" onclick="closeModal('modal-user')">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+            <button class="adm-modal-close" data-close="modal-user">
+                <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
         <div class="adm-modal-body">
-            <div style="text-align:center;margin-bottom:20px">
+            <div class="modal-avatar-wrap">
                 <img id="modal-user-avatar" src="" alt=""
-                     style="width:72px;height:72px;border-radius:50%;border:3px solid var(--cyan);object-fit:cover">
+                     class="modal-avatar">
+                <div>
+                    <div style="font-size:16px;font-weight:700" id="modal-user-name2"></div>
+                    <div id="modal-user-role-badge"></div>
+                </div>
             </div>
             <div class="adm-modal-row">
-                <strong>E-mail</strong>
+                <span class="adm-modal-key"><i class="fa-solid fa-envelope"></i> E-mail</span>
                 <span id="modal-user-email"></span>
             </div>
             <div class="adm-modal-row">
-                <strong>XP</strong>
-                <span id="modal-user-xp"></span>
+                <span class="adm-modal-key"><i class="fa-solid fa-star"></i> XP Total</span>
+                <span id="modal-user-xp" style="color:var(--cyan);font-weight:600"></span>
             </div>
             <div class="adm-modal-row">
-                <strong>Streak</strong>
-                <span id="modal-user-streak"></span>
+                <span class="adm-modal-key"><i class="fa-solid fa-fire"></i> Streak</span>
+                <span id="modal-user-streak" style="color:#f97316;font-weight:600"></span>
             </div>
-            <div class="adm-modal-row">
-                <strong>Tipo</strong>
-                <span id="modal-user-role"></span>
-            </div>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn adm-btn-danger" id="modal-user-delete-btn">
+                <i class="fa-solid fa-trash"></i> Deletar Usuário
+            </button>
         </div>
     </div>
 </div>
@@ -355,40 +371,64 @@ $avatarUrl = $adminFoto
 <!-- ════════════════════════════
      MODAL: CHAMADO
 ════════════════════════════ -->
-<div class="adm-modal-overlay" id="modal-ticket" onclick="if(event.target===this)closeModal('modal-ticket')">
+<div class="adm-modal-overlay" id="modal-ticket">
     <div class="adm-modal">
         <div class="adm-modal-header">
             <div>
                 <div class="adm-modal-id" id="modal-ticket-id"></div>
                 <div class="adm-modal-title" id="modal-ticket-subject"></div>
             </div>
-            <button class="adm-modal-close" onclick="closeModal('modal-ticket')">
-                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
+            <button class="adm-modal-close" data-close="modal-ticket">
+                <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
         <div class="adm-modal-body">
-            <div class="adm-modal-row"><strong>Nome</strong><span id="modal-ticket-name"></span></div>
             <div class="adm-modal-row">
-                <strong>E-mail</strong>
+                <span class="adm-modal-key"><i class="fa-solid fa-user"></i> Nome</span>
+                <span id="modal-ticket-name"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-envelope"></i> E-mail</span>
                 <a id="modal-ticket-email" href="#" style="color:var(--cyan)"></a>
             </div>
-            <div class="adm-modal-row"><strong>Categoria</strong><span id="modal-ticket-cat"></span></div>
-            <div class="adm-modal-row"><strong>Prioridade</strong><span id="modal-ticket-prio"></span></div>
-            <div class="adm-modal-row"><strong>Status</strong><span id="modal-ticket-status"></span></div>
-            <div class="adm-modal-row"><strong>Data</strong><span id="modal-ticket-date"></span></div>
-            <div style="margin-top:16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:8px">
-                Mensagem
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-tag"></i> Categoria</span>
+                <span id="modal-ticket-cat"></span>
             </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-flag"></i> Prioridade</span>
+                <span id="modal-ticket-prio"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-solid fa-circle-dot"></i> Status</span>
+                <span id="modal-ticket-status"></span>
+            </div>
+            <div class="adm-modal-row">
+                <span class="adm-modal-key"><i class="fa-regular fa-calendar"></i> Data</span>
+                <span id="modal-ticket-date"></span>
+            </div>
+            <div class="adm-modal-msg-label">Mensagem</div>
             <div class="adm-modal-message" id="modal-ticket-msg"></div>
+
+            <!-- Resposta anterior (oculta por padrão) -->
+            <div class="adm-modal-msg-label" id="modal-reply-prev-label" style="display:none">Resposta Anterior</div>
+            <div class="adm-modal-message adm-reply-prev" id="modal-ticket-reply-prev" style="display:none"></div>
+
+            <!-- Campo de nova resposta -->
+            <div class="adm-modal-msg-label">Responder</div>
+            <textarea id="modal-ticket-reply-input" class="adm-reply-textarea" placeholder="Digite sua resposta..."></textarea>
+        </div>
+        <div class="adm-modal-footer">
+            <button class="adm-btn adm-btn-primary" id="modal-ticket-reply-btn">
+                <i class="fa-solid fa-paper-plane"></i> Enviar Resposta
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Toast -->
 <div id="adm-toast"></div>
 
 <script src="../js/adm.js"></script>
+<script src="../js/avatar.js" ></script>
 </body>
 </html>
