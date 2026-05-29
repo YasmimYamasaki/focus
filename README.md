@@ -53,4 +53,4 @@ INTEGRANTES DO GRUPO:
 
 -Bruno Vona
 
--Yasmin
+-Yasmim Yamasaki
